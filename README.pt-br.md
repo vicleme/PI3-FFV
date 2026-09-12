@@ -2,13 +2,24 @@
 
 🇧🇷 Português&nbsp;|&nbsp;[🇺🇸 English](README.md)
 
-Notebooks e projeto da disciplina de Recuperação de Informação (Projeto
-Integrador 3): exercícios semanais de prática/interpretação propostos pelo
-professor ao fim de cada aula, além de um projeto de semestre — um pequeno
-motor de busca construído em R, usando ponderação TF-IDF, similaridade de
-cosseno e o modelo do espaço vetorial.
+Um pequeno motor de busca, construído do zero em R, para a disciplina de
+Recuperação de Informação (Projeto Integrador 3) da Fatec Baixada
+Santista. Sem `tm`, `quanteda` nem nenhuma biblioteca pronta de busca:
+cada peça (tokenização, ponderação TF-IDF, modelo do espaço vetorial,
+similaridade de cosseno) é implementada manualmente, e depois testada
+tanto num corpus de brinquedo quanto num corpus real — os verbetes da
+Wikipédia de três cidades da Baixada Santista (Santos, Cubatão e
+Guarujá).
 
-## Estrutura do repositório
+Se você é um recrutador ou alguém só curioso, `estrutura/código/` é o
+caminho mais rápido pra ver o motor em si; `Consolidado/` é onde o
+resultado de cada etapa é interpretado em linguagem simples, incluindo
+alguns dos limites conhecidos do modelo encontrados no caminho (ex.: o
+TF-IDF destacando nomes próprios como se fossem termos "relevantes", e
+uma cidade que fica literalmente invisível pra similaridade de cosseno
+quando o vocabulário da consulta não tem sobreposição com o texto dela).
+
+## Como este repositório está organizado
 
 ```
 estrutura/
@@ -62,9 +73,3 @@ aprendizado e para o projeto do motor de busca.
 ### `trash/`
 Arquivos descontinuados, mantidos por pedido do professor para fins de
 histórico (ver `trash/README.md`).
-
-## Tags sugeridas
-
-`information-retrieval` · `tf-idf` · `vector-space-model` · `search-engine` ·
-`r` · `data-science` · `nlp` · `cosine-similarity` · `information-theory` ·
-`text-mining`

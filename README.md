@@ -2,13 +2,23 @@
 
 [🇧🇷 Português](README.pt-br.md)&nbsp;|&nbsp;🇺🇸 English
 
-Notebooks and project for the Information Retrieval course (Projeto
-Integrador 3): weekly practice/interpretation exercises assigned by the
-professor at the end of each class, alongside a semester-long project — a
-small search engine built in R using TF-IDF weighting, cosine similarity
-and the vector space model.
+A small search engine, built from scratch in R, for the Information
+Retrieval course (Projeto Integrador 3) at Fatec Baixada Santista. No
+`tm`, `quanteda`, or search library — every piece (tokenization, TF-IDF
+weighting, the vector space model, cosine similarity) is implemented by
+hand, then tested against both a toy corpus and a real one: the Wikipedia
+entries for three cities in the Baixada Santista region (Santos, Cubatão
+and Guarujá).
 
-## Repository structure
+If you're a recruiter or a curious reader, `estrutura/código/` is the
+fastest way to see the actual engine; `Consolidado/` is where each step's
+result is interpreted in plain language, including a couple of the
+model's known blind spots found along the way (e.g. TF-IDF surfacing
+proper nouns as "relevant" terms, and a city that becomes literally
+invisible to cosine similarity once the query vocabulary doesn't overlap
+with its text).
+
+## How this repository is organized
 
 ```
 estrutura/
@@ -62,9 +72,3 @@ learning and for the search engine project.
 ### `trash/`
 Discontinued files, kept at the professor's request for historical record
 (see `trash/README.md`).
-
-## Suggested tags
-
-`information-retrieval` · `tf-idf` · `vector-space-model` · `search-engine` ·
-`r` · `data-science` · `nlp` · `cosine-similarity` · `information-theory` ·
-`text-mining`
