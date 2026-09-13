@@ -64,6 +64,13 @@ buscados na API a cada execução.
   informação de Shannon, em bits.
 - `06-modelo-espaco-vetorial-toy.R` — TF-IDF + cosseno no corpus de
   brinquedo, com 3 consultas de exemplo.
+- `07-pre-processamento-indice-invertido.R` — normalização de texto,
+  stemming em português (SnowballC) e índice invertido (postings list),
+  aplicados ao corpus real em granularidade de parágrafo, com busca
+  booleana `AND`/`OR` (Aula 3).
+- `08-bm25.R` — BM25 (saturação de frequência `k1`, normalização de
+  tamanho `b`), aplicado ao mesmo corpus e comparado com o ranking de
+  TF-IDF + cosseno (Aula 4).
 
 ### `Consolidado/`
 Um documento por notebook/aula, descrevendo e interpretando o que foi

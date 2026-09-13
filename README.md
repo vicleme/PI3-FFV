@@ -63,6 +63,13 @@ being fetched from the API on every run.
   theory, in bits.
 - `06-modelo-espaco-vetorial-toy.R` — TF-IDF + cosine on the toy corpus,
   with 3 example queries.
+- `07-pre-processamento-indice-invertido.R` — text normalization,
+  Portuguese stemming (SnowballC) and an inverted index (postings list),
+  applied to the real corpus at paragraph granularity, with boolean
+  `AND`/`OR` search (Class 3).
+- `08-bm25.R` — BM25 (frequency saturation `k1`, length normalization
+  `b`), applied to the same corpus and compared against the TF-IDF +
+  cosine ranking (Class 4).
 
 ### `Consolidado/`
 One document per notebook/class, describing and interpreting what was
