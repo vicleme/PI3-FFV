@@ -1,7 +1,7 @@
 # 02-toy-corpus-tfidf.R
 # Aula: Recuperação de Informação (2026-08-14) — Parte 1: corpus de brinquedo
 # Vetorização, tokenização, vocabulário, TDM, busca booleana, TF-IDF.
-# Ver Consolidado/02-recuperacao-de-informacao.md para a interpretação.
+# Ver consolidado-legado/02-recuperacao-de-informacao.md para a interpretação.
 
 ## Bloco 1: criação do vetor de documentos ----------------------------------
 docs <- c(

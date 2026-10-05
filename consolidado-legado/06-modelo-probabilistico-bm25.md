@@ -1,11 +1,11 @@
 # Modelo Probabilístico: BM25 (2026-09-12)
 
 Código completo:
-[`08-bm25.R`](../estrutura/código/08-bm25.R)
+[`08-bm25.R`](../estrutura/codigo/08-bm25.R)
 (corpus real, granularidade de parágrafo — reaproveita `tokenizar_limpo` de
-[`03-corpus-cidades-tfidf-busca.R`](../estrutura/código/03-corpus-cidades-tfidf-busca.R)
+[`03-corpus-cidades-tfidf-busca.R`](../estrutura/codigo/03-corpus-cidades-tfidf-busca.R)
 e `cosseno` de
-[`04-similaridade-cosseno-cidades.R`](../estrutura/código/04-similaridade-cosseno-cidades.R))
+[`04-similaridade-cosseno-cidades.R`](../estrutura/codigo/04-similaridade-cosseno-cidades.R))
 
 ## O que foi feito
 

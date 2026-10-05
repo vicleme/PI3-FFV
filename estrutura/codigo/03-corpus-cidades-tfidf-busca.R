@@ -8,7 +8,7 @@
 # (corpus$texto); para a granularidade de parágrafo (corpus$docs), ver
 # 03b-corpus-cidades-paragrafos.R.
 #
-# Ver Consolidado/02-recuperacao-de-informacao.md para a interpretação.
+# Ver consolidado-legado/02-recuperacao-de-informacao.md para a interpretação.
 
 source("utils-corpus.R")
 corpus <- carregar_corpus()

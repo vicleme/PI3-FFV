@@ -1,0 +1,11 @@
+consulta,texto_consulta,necessidade,escopo
+q01,fundacao santos ano,O usuário quer saber o ano e o contexto histórico da fundação de Santos.,Não contam menções a aniversários ou fundação de outras vilas sem indicar o ano de Santos.
+q02,praias santos quantidade,O usuário quer saber a quantidade exata de praias que formam a orla de Santos.,Não contam praias de Guarujá ou menções genéricas ao turismo sem a contagem de praias de Santos.
+q03,maior porto america latina,O usuário quer saber qual cidade abriga e localiza o maior porto da América Latina.,Não contam dados econômicos gerais sem identificar o município onde o porto fica.
+q04,polo industrial,O usuário quer saber qual cidade da Baixada Santista abriga um grande polo industrial.,Não contam menções genéricas a indústrias sem nomear a cidade com o polo industrial.
+q05,tamanho guaruja,O usuário quer saber a área territorial ou extensão em quilômetros de Guarujá.,Não contam números de população isolados ou áreas de outros municípios.
+q06,jogador santos futebol historia,O usuário quer saber quais jogadores famosos de futebol passaram pelo time de Santos.,Não contam menções a surfe ou outros esportes praticados na cidade sem citar jogador de futebol.
+q07,cubatao virou municipio ano,O usuário quer saber em que ano Cubatão se tornou um município independente/autônomo.,"Não contam menções a outros marcos históricos de Cubatão (fundação do povoado, construção de vias, inauguração de usina) sem indicar o ano da emancipação política."
+q08,significado nome guaruja,O usuário quer saber a origem e o significado do nome do município de Guarujá.,Não contam menções a apelidos turísticos da cidade (ex.: Pérola do Atlântico) sem a etimologia do nome original.
+q09,populacao cubatao censo,O usuário quer saber o número de habitantes de Cubatão segundo o censo.,Não contam dados de população de outras cidades da Baixada Santista ou estimativas sem fonte censitária.
+q10,travessia balsa santos guaruja,O usuário quer saber como funciona a travessia de balsa entre Santos e Guarujá.,Não contam menções a pontes ou acessos rodoviários sem ser a travessia de balsa especificamente.

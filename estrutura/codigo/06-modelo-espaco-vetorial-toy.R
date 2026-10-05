@@ -2,7 +2,7 @@
 # Aula: Modelo do Espaço Vetorial (2026-08-25) — Parte 1: tarefa oficial
 # Reaproveita o corpus de 8 documentos, implementa TF-IDF + cosseno e reporta
 # o ranking de 3 consultas.
-# Ver Consolidado/04-modelo-do-espaco-vetorial.md para a interpretação.
+# Ver consolidado-legado/04-modelo-do-espaco-vetorial.md para a interpretação.
 #
 # Nota: a Parte 2 deste notebook ("Continuando a pesquisa da Baixada
 # Santista") repete o mesmo corpus real e a mesma função de busca por

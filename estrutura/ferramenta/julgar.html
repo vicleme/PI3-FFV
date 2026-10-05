@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Julgamento de Relevância — RI</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --g0-color: #ef4444;
+      --g1-color: #f59e0b;
+      --g2-color: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 860px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    h1 { font-size: 1.4rem; margin-bottom: 12px; color: var(--text-main); }
+    h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-main); }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+    input[type="text"], input[type="file"], textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; }
+    button { cursor: pointer; border-radius: 6px; border: none; padding: 10px 18px; font-weight: 600; transition: 0.2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: #e2e8f0; color: #1e293b; margin-left: 10px; }
+    .btn-secondary:hover { background: #cbd5e1; }
+    
+    /* Área de Julgamento Fixa */
+    .top-bar { position: sticky; top: 10px; z-index: 100; background: #eff6ff; border: 1px solid #bfdbfe; border-left: 6px solid var(--primary); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+    .top-bar .meta { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; color: var(--primary); margin-bottom: 6px; }
+    .top-bar .necessidade { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: #1e3a8a; }
+    .top-bar .escopo { font-size: 0.85rem; color: #475569; }
+    
+    /* Documento */
+    .doc-box { min-height: 180px; margin-bottom: 20px; }
+    .doc-header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 14px; font-size: 0.9rem; color: var(--text-muted); }
+    .doc-titulo { font-size: 1.15rem; font-weight: bold; margin-bottom: 10px; color: var(--text-main); }
+    .doc-texto { font-size: 1rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
+    
+    /* Ações de Voto */
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .btn-nota { padding: 16px; color: #fff; text-align: center; border-radius: 8px; font-size: 0.95rem; display: flex; flex-direction: column; gap: 4px; }
+    .btn-nota span.key { font-size: 0.75rem; opacity: 0.8; }
+    .btn-0 { background: var(--g0-color); }
+    .btn-1 { background: var(--g1-color); }
+    .btn-2 { background: var(--g2-color); }
+    .btn-nota:hover { opacity: 0.9; transform: translateY(-2px); }
+    
+    .nav-actions { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    .link-action { color: var(--primary); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+    
+    /* Modal / Guia */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 200; }
+    .modal-content { background: #fff; max-width: 600px; width: 90%; border-radius: 10px; padding: 24px; max-height: 80vh; overflow-y: auto; }
+    .modal-content h3 { margin-bottom: 12px; }
+    .modal-content ul { padding-left: 20px; line-height: 1.6; margin-bottom: 16px; font-size: 0.9rem; }
+    
+    /* Progresso */
+    .progress-bar-container { width: 100%; background: var(--border); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- TELA 1: SETUP -->
+  <div id="tela-setup" class="card">
+    <h1>Configuração do Julgamento</h1>
+    <div class="form-group">
+      <label>Seu Nome / Identificador de Juiz:</label>
+      <input type="text" id="input-juiz" placeholder="ex: flavia">
+    </div>
+    <div class="form-group">
+      <label>Arquivo de Corpus (<code>paragrafos.csv</code> ou similar):</label>
+      <input type="file" id="file-corpus" accept=".csv">
+    </div>
+    <div class="form-group">
+      <label>Arquivo de Necessidades (<code>necessidades.csv</code>):</label>
+      <input type="file" id="file-necs" accept=".csv">
+    </div>
+    <button class="btn-primary" onclick="iniciarSessao()">Iniciar / Retomar Julgamento</button>
+  </div>
+
+  <!-- TELA 2: JULGAMENTO -->
+  <div id="tela-julgar" style="display: none;">
+    <div class="top-bar">
+      <div class="meta">
+        <span id="nec-id">q01</span>
+        <span id="nec-consulta">consulta: ...</span>
+      </div>
+      <div class="necessidade" id="nec-texto">Carregando necessidade...</div>
+      <div class="escopo" id="nec-escopo"><b>Escopo:</b> ...</div>
+    </div>
+
+    <div class="card">
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="p-bar"></div>
+      </div>
+      <div class="doc-header">
+        <span id="doc-progresso">Item 0 de 0</span>
+        <span id="doc-id">id: ...</span>
+      </div>
+
+      <div class="doc-box">
+        <div class="doc-titulo" id="doc-titulo"></div>
+        <div class="doc-texto" id="doc-texto"></div>
+      </div>
+
+      <div class="btn-grid">
+        <button class="btn-nota btn-0" onclick="julgar(0)">
+          <b>0 — Não serve</b>
+          <span class="key">Tecla [ 0 ]</span>
+        </button>
+        <button class="btn-nota btn-1" onclick="julgar(1)">
+          <b>1 — Fala do assunto</b>
+          <span class="key">Tecla [ 1 ]</span>
+        </button>
+        <button class="btn-nota btn-2" onclick="julgar(2)">
+          <b>2 — Responde</b>
+          <span class="key">Tecla [ 2 ]</span>
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="link-action" onclick="voltar()">← Voltar e corrigir (Seta Esquerda)</button>
+        <button class="link-action" onclick="abrirGuia()">Ver Guia (G)</button>
+        <button class="link-action" onclick="finalizarExportar()">Exportar qrels.csv</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 3: FIM / EXPORTAR -->
+  <div id="tela-fim" class="card" style="display: none;">
+    <h1>Exportação / Conclusão</h1>
+    <p style="margin: 16px 0;">Você pode baixar o arquivo <code>qrels.csv</code> com as anotações feitas até aqui ou retornar ao julgamento.</p>
+    <div id="stats" style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-muted);"></div>
+    <button class="btn-primary" onclick="baixarCSV()">Baixar qrels.csv</button>
+    <button class="btn-secondary" onclick="retornarAoJulgamento()">← Voltar ao julgamento</button>
+  </div>
+
+  <!-- MODAL DO GUIA -->
+  <div id="modal-guia" class="modal" onclick="fecharGuia()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3>Guia de Julgamento</h3>
+      <ul>
+        <li><b>2 — Responde:</b> Responde diretamente à necessidade em questão.</li>
+        <li><b>1 — Fala do assunto:</b> Contexto útil ou menciona palavras-chave sem responder diretamente à pergunta.</li>
+        <li><b>0 — Não serve:</b> Irrelevante ou trata de outro tópico.</li>
+      </ul>
+      <p style="font-size:0.85rem; color:var(--text-muted);">Atalhos: [0], [1], [2] para notas | [←] para voltar | [G] fecha guia.</p>
+      <button class="btn-primary" style="margin-top:12px;" onclick="fecharGuia()">Fechar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let corpusMap = new Map();
+  let necsMap = new Map();
+  let filaJulgamento = [];   // array de {consulta, documento}, ordem ESTÁVEL (salva uma vez)
+  let indexAtual = 0;
+  let juiz = "anonimo";
+  let julgamentosMap = {};   // chave "consulta||documento" -> registro. Nunca indexado por posição.
+  let tInicioItem = Date.now();
+
+  function chaveDoPar(consulta, documento) {
+    return consulta + "||" + documento;
+  }
+
+  function chaveStorage(juiz) {
+    return "sessao_v2_" + juiz;
+  }
+
+  function salvarSessao() {
+    localStorage.setItem(chaveStorage(juiz), JSON.stringify({
+      ordem: filaJulgamento,
+      julgamentos: julgamentosMap,
+      indexAtual: indexAtual
+    }));
+  }
+
+  function parseCSV(text) {
+    text = text.replace(/^\uFEFF/, '').trim();
+    let lines = text.split(/\r\n|\n/);
+    if (!lines.length || !lines[0].trim()) return [];
+
+    let headerLine = lines[0];
+    let delimiter = (headerLine.includes(';') && !headerLine.includes(',')) ? ';' : ',';
+
+    function splitRow(line) {
+      let values = [];
+      let inQuotes = false, token = '';
+      for (let i = 0; i < line.length; i++) {
+        let c = line[i];
+        if (c === '"') {
+          inQuotes = !inQuotes;
+        } else if (c === delimiter && !inQuotes) {
+          values.push(token.trim().replace(/^["']|["']$/g, ''));
+          token = '';
+        } else {
+          token += c;
+        }
+      }
+      values.push(token.trim().replace(/^["']|["']$/g, ''));
+      return values;
+    }
+
+    let headers = splitRow(lines[0]);
+    let rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      let l = lines[i];
+      if (!l.trim()) continue;
+      let values = splitRow(l);
+      let row = {};
+      headers.forEach((h, idx) => {
+        row[h] = values[idx] || '';
+      });
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function lerArquivo(file) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsText(file, "UTF-8");
+    });
+  }
+
+  async function iniciarSessao() {
+    juiz = document.getElementById('input-juiz').value.trim() || "juiz";
+    let fCorp = document.getElementById('file-corpus').files[0];
+    let fNecs = document.getElementById('file-necs').files[0];
+
+    if (!fCorp || !fNecs) {
+      alert("Por favor, selecione ambos os arquivos CSV (corpus e necessidades).");
+      return;
+    }
+
+    let txtCorp = await lerArquivo(fCorp);
+    let txtNecs = await lerArquivo(fNecs);
+
+    let rowsCorp = parseCSV(txtCorp);
+    let rowsNecs = parseCSV(txtNecs);
+
+    rowsCorp.forEach(r => {
+      let id = r.id || r.doc_id;
+      corpusMap.set(id, { titulo: r.titulo || r.cidade || '', texto: r.texto || '' });
+    });
+
+    rowsNecs.forEach(r => {
+      let cid = r.consulta || r.id;
+      necsMap.set(cid, {
+        texto_consulta: r.texto_consulta || '',
+        necessidade: r.necessidade || '',
+        escopo: r.escopo || ''
+      });
+    });
+
+    // Todos os pares (consulta, documento) que existem hoje no corpus/necessidades carregados
+    let paresAtuais = [];
+    for (let c of necsMap.keys()) {
+      for (let d of corpusMap.keys()) {
+        paresAtuais.push({ consulta: c, documento: d });
+      }
+    }
+
+    let salvo = localStorage.getItem(chaveStorage(juiz));
+    // Migração de sessões antigas (bug do reembaralhamento): se existir uma sessão no formato
+    // antigo ("julgamentos_" + juiz, um array indexado por posição), ela é ignorada aqui —
+    // não dá para recuperar com segurança qual posição correspondia a qual par.
+    if (salvo) {
+      let dados = JSON.parse(salvo);
+      filaJulgamento = dados.ordem || [];
+      julgamentosMap = dados.julgamentos || {};
+      indexAtual = typeof dados.indexAtual === 'number' ? dados.indexAtual : 0;
+
+      // Se o corpus ou as necessidades mudaram desde a última sessão (novo documento
+      // adicionado, por exemplo), adiciona ao FIM da fila só os pares que ainda não existiam,
+      // sem tocar na ordem já usada.
+      let jaNaFila = new Set(filaJulgamento.map(p => chaveDoPar(p.consulta, p.documento)));
+      for (let par of paresAtuais) {
+        let k = chaveDoPar(par.consulta, par.documento);
+        if (!jaNaFila.has(k)) {
+          filaJulgamento.push(par);
+          jaNaFila.add(k);
+        }
+      }
+    } else {
+      // Primeira vez deste juiz: embaralha UMA ÚNICA VEZ e persiste essa ordem.
+      filaJulgamento = paresAtuais.slice();
+      filaJulgamento.sort(() => Math.random() - 0.5);
+      julgamentosMap = {};
+      indexAtual = 0;
+      salvarSessao();
+    }
+
+    // indexAtual sempre aponta para o primeiro par da fila ainda não julgado (evita reabrir
+    // no meio de um trecho já coberto se a sessão foi salva num estado inconsistente).
+    while (indexAtual < filaJulgamento.length &&
+           julgamentosMap[chaveDoPar(filaJulgamento[indexAtual].consulta, filaJulgamento[indexAtual].documento)]) {
+      indexAtual++;
+    }
+
+    document.getElementById('tela-setup').style.display = 'none';
+    document.getElementById('tela-julgar').style.display = 'block';
+    mostrarItem();
+  }
+
+  function mostrarItem() {
+    if (indexAtual >= filaJulgamento.length) {
+      exibirFim();
+      return;
+    }
+    tInicioItem = Date.now();
+    let item = filaJulgamento[indexAtual];
+    let nec = necsMap.get(item.consulta);
+    let doc = corpusMap.get(item.documento);
+
+    document.getElementById('nec-id').innerText = item.consulta;
+    document.getElementById('nec-consulta').innerText = "Consulta digitada: " + (nec ? nec.texto_consulta : '');
+    document.getElementById('nec-texto').innerText = nec ? nec.necessidade : 'Sem texto';
+    document.getElementById('nec-escopo').innerHTML = "<b>Escopo:</b> " + (nec ? nec.escopo : '');
+
+    let totalJulgados = Object.keys(julgamentosMap).length;
+    document.getElementById('doc-progresso').innerText =
+      `Item ${indexAtual + 1} de ${filaJulgamento.length} — ${totalJulgados} pares julgados no total`;
+    document.getElementById('doc-id').innerText = "Doc ID: " + item.documento;
+    document.getElementById('doc-titulo').innerText = doc ? doc.titulo : '';
+    document.getElementById('doc-texto').innerText = doc ? doc.texto : '';
+
+    // Progresso real = pares distintos já julgados / total de pares na fila (não a posição),
+    // já que "voltar" e rejulgar não devem inflar nem a barra nem o contador.
+    let pct = (totalJulgados / filaJulgamento.length) * 100;
+    document.getElementById('p-bar').style.width = pct + "%";
+  }
+
+  function julgar(nota) {
+    let seg = Math.round((Date.now() - tInicioItem) / 1000);
+    let item = filaJulgamento[indexAtual];
+    let registro = {
+      consulta: item.consulta,
+      documento: item.documento,
+      grau: nota,
+      juiz: juiz,
+      timestamp: new Date().toISOString(),
+      segundos: seg
+    };
+
+    // Chave = (consulta, documento), nunca posição. Julgar o mesmo par duas vezes apenas
+    // atualiza o registro existente — nunca cria uma segunda linha no qrels.csv exportado.
+    julgamentosMap[chaveDoPar(item.consulta, item.documento)] = registro;
+
+    indexAtual++;
+    salvarSessao();
+    mostrarItem();
+  }
+
+  function voltar() {
+    if (indexAtual > 0) {
+      indexAtual--;
+      salvarSessao();
+      mostrarItem();
+    }
+  }
+
+  function abrirGuia() { document.getElementById('modal-guia').style.display = 'flex'; }
+  function fecharGuia() { document.getElementById('modal-guia').style.display = 'none'; }
+
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('tela-julgar').style.display === 'block') {
+      if (e.key === '0') julgar(0);
+      else if (e.key === '1') julgar(1);
+      else if (e.key === '2') julgar(2);
+      else if (e.key === 'ArrowLeft') voltar();
+      else if (e.key.toLowerCase() === 'g') {
+        let m = document.getElementById('modal-guia');
+        m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+      }
+    }
+  });
+
+  function exibirFim() {
+    document.getElementById('tela-julgar').style.display = 'none';
+    document.getElementById('tela-fim').style.display = 'block';
+    let registros = Object.values(julgamentosMap);
+    let rapides = registros.filter(j => j.segundos < 5).length;
+    document.getElementById('stats').innerText = `Total avaliado até agora: ${registros.length} de ${filaJulgamento.length} pares únicos. (Itens com menos de 5 segundos: ${rapides}).`;
+  }
+
+  function finalizarExportar() {
+    exibirFim();
+    baixarCSV();
+  }
+
+  function retornarAoJulgamento() {
+    document.getElementById('tela-fim').style.display = 'none';
+    document.getElementById('tela-julgar').style.display = 'block';
+    mostrarItem();
+  }
+
+  function baixarCSV() {
+    let csv = "\uFEFFconsulta,documento,grau,juiz,timestamp,segundos\n";
+    // Object.values garante um único registro por par (consulta, documento) — nunca duplicado.
+    Object.values(julgamentosMap).forEach(j => {
+      csv += `${j.consulta},${j.documento},${j.grau},${j.juiz},${j.timestamp},${j.segundos}\n`;
+    });
+    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "qrels.csv";
+    link.click();
+  }
+</script>
+</body>
+</html>

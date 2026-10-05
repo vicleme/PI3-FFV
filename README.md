@@ -10,8 +10,8 @@ hand, then tested against both a toy corpus and a real one: the Wikipedia
 entries for three cities in the Baixada Santista region (Santos, Cubatão
 and Guarujá).
 
-If you're a recruiter or a curious reader, `estrutura/código/` is the
-fastest way to see the actual engine; `Consolidado/` is where each step's
+If you're a recruiter or a curious reader, `estrutura/codigo/` is the
+fastest way to see the actual engine; `consolidado-legado/` is where each step's
 result is interpreted in plain language, including a couple of the
 model's known blind spots found along the way (e.g. TF-IDF surfacing
 proper nouns as "relevant" terms, and a city that becomes literally
@@ -23,9 +23,10 @@ with its text).
 ```
 estrutura/
   corpus/            .txt files of the Wikipedia entries (Santos, Cubatão, Guarujá)
-  código/             R scripts, split by class/block
-Consolidado/          one .md per class, interpreting what was done
+  codigo/             R scripts, split by class/block
+consolidado-legado/   one .md per class, written by the group, interpreting what was done
                        (little code, focused on the learning/project takeaways)
+consolidados/         reports from the AI study-guide sessions (from Class 5.5 on)
 trash/                discontinued files, kept at the professor's request
 README.md             this file
 README.pt-br.md        Portuguese version of this file
@@ -34,15 +35,15 @@ README.pt-br.md        Portuguese version of this file
 ### `estrutura/corpus/`
 `Santos.txt`, `Cubatao.txt` and `Guaruja.txt` — the Portuguese-language
 Wikipedia entries (CC BY-SA) used as the project's real corpus, downloaded
-and persisted to disk by `estrutura/código/00-preparar-corpus.R` instead of
+and persisted to disk by `estrutura/codigo/00-preparar-corpus.R` instead of
 being fetched from the API on every run.
 
 `paragrafos.csv` — the same paragraph split used in
 `03b-corpus-cidades-paragrafos.R` (columns `doc_id`, `cidade`,
 `paragrafo_num`, `n_caracteres`, `texto`), exported by
-`estrutura/código/00b-exportar-paragrafos-csv.R` for inspection outside R.
+`estrutura/codigo/00b-exportar-paragrafos-csv.R` for inspection outside R.
 
-### `estrutura/código/`
+### `estrutura/codigo/`
 - `00-preparar-corpus.R` — downloads the Wikipedia entries and writes them
   to `estrutura/corpus/`.
 - `utils-corpus.R` — shared functions to load the saved corpus, at the two
@@ -71,10 +72,15 @@ being fetched from the API on every run.
   `b`), applied to the same corpus and compared against the TF-IDF +
   cosine ranking (Class 4).
 
-### `Consolidado/`
+### `consolidado-legado/`
 One document per notebook/class, describing and interpreting what was
 done — with little code and a focus on what each step means for the
-learning and for the search engine project.
+learning and for the search engine project. Written by the group before the
+AI study guides existed.
+
+### `consolidados/`
+One report per AI study-guide session (from Class 5.5 on), following the
+file names the guides define (e.g. `aula05b_consolidado.md`).
 
 ### `trash/`
 Discontinued files, kept at the professor's request for historical record

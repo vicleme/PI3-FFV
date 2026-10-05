@@ -11,8 +11,8 @@ tanto num corpus de brinquedo quanto num corpus real — os verbetes da
 Wikipédia de três cidades da Baixada Santista (Santos, Cubatão e
 Guarujá).
 
-Se você é um recrutador ou alguém só curioso, `estrutura/código/` é o
-caminho mais rápido pra ver o motor em si; `Consolidado/` é onde o
+Se você é um recrutador ou alguém só curioso, `estrutura/codigo/` é o
+caminho mais rápido pra ver o motor em si; `consolidado-legado/` é onde o
 resultado de cada etapa é interpretado em linguagem simples, incluindo
 alguns dos limites conhecidos do modelo encontrados no caminho (ex.: o
 TF-IDF destacando nomes próprios como se fossem termos "relevantes", e
@@ -24,9 +24,10 @@ quando o vocabulário da consulta não tem sobreposição com o texto dela).
 ```
 estrutura/
   corpus/            .txt dos verbetes da Wikipédia (Santos, Cubatão, Guarujá)
-  código/             scripts em R, separados por aula/bloco
-Consolidado/          um .md por aula, com a interpretação do que foi feito
+  codigo/             scripts em R, separados por aula/bloco
+consolidado-legado/   um .md por aula, escritos pelo grupo, com a interpretação do que foi feito
                        (pouco código, foco no aprendizado e no projeto)
+consolidados/         relatórios das sessões dos guias de estudo com IA (da Aula 5,5 em diante)
 trash/                arquivos descontinuados, mantidos por pedido do professor
 README.md             versão em inglês (principal) deste arquivo
 README.pt-br.md        este arquivo
@@ -35,15 +36,15 @@ README.pt-br.md        este arquivo
 ### `estrutura/corpus/`
 `Santos.txt`, `Cubatao.txt` e `Guaruja.txt` — os verbetes da Wikipédia em
 português (CC BY-SA) usados como corpus real do projeto, baixados e
-persistidos em disco por `estrutura/código/00-preparar-corpus.R` em vez de
+persistidos em disco por `estrutura/codigo/00-preparar-corpus.R` em vez de
 buscados na API a cada execução.
 
 `paragrafos.csv` — a mesma divisão em parágrafos usada em
 `03b-corpus-cidades-paragrafos.R` (colunas `doc_id`, `cidade`,
 `paragrafo_num`, `n_caracteres`, `texto`), exportada por
-`estrutura/código/00b-exportar-paragrafos-csv.R` para consulta fora do R.
+`estrutura/codigo/00b-exportar-paragrafos-csv.R` para consulta fora do R.
 
-### `estrutura/código/`
+### `estrutura/codigo/`
 - `00-preparar-corpus.R` — baixa os verbetes da Wikipédia e grava em
   `estrutura/corpus/`.
 - `utils-corpus.R` — funções compartilhadas para carregar o corpus salvo,
@@ -72,10 +73,15 @@ buscados na API a cada execução.
   tamanho `b`), aplicado ao mesmo corpus e comparado com o ranking de
   TF-IDF + cosseno (Aula 4).
 
-### `Consolidado/`
+### `consolidado-legado/`
 Um documento por notebook/aula, descrevendo e interpretando o que foi
 feito — com pouco código e foco no que cada etapa representa para o
-aprendizado e para o projeto do motor de busca.
+aprendizado e para o projeto do motor de busca. Escritos pelo grupo antes dos
+guias de estudo com IA.
+
+### `consolidados/`
+Um relatório por sessão dos guias de estudo com IA (da Aula 5,5 em diante),
+com os nomes que os guias definem (ex.: `aula05b_consolidado.md`).
 
 ### `trash/`
 Arquivos descontinuados, mantidos por pedido do professor para fins de

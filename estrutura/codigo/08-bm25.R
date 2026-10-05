@@ -10,7 +10,7 @@
 # métodos, pra que a comparação de ranking não misture pré-processamentos
 # diferentes.
 #
-# Ver Consolidado/06-modelo-probabilistico-bm25.md para a interpretação.
+# Ver consolidado-legado/06-modelo-probabilistico-bm25.md para a interpretação.
 
 source("utils-corpus.R")
 corpus <- carregar_corpus()

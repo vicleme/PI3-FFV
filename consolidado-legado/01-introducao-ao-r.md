@@ -1,6 +1,6 @@
 # Introdução ao R (2026-08-07)
 
-Código completo: [`estrutura/código/01-intro-r.R`](../estrutura/código/01-intro-r.R)
+Código completo: [`estrutura/codigo/01-intro-r.R`](../estrutura/codigo/01-intro-r.R)
 
 ## O que foi feito
 

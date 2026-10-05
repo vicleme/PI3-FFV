@@ -10,7 +10,7 @@
 # pontuação + colapso de espaços + remoção de stopwords, na mesma ordem do
 # limpar() do slide da Aula 03).
 #
-# Ver Consolidado/05-pre-processamento-indice-invertido.md para a interpretação.
+# Ver consolidado-legado/05-pre-processamento-indice-invertido.md para a interpretação.
 
 source("utils-corpus.R")
 corpus <- carregar_corpus()

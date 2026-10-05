@@ -1,7 +1,7 @@
 # 01-intro-r.R
 # Aula: Introdução ao R (2026-08-07)
 # Exercícios de treino: vetores, funções, apply, factor/table, regex.
-# Ver Consolidado/01-introducao-ao-r.md para a interpretação de cada bloco.
+# Ver consolidado-legado/01-introducao-ao-r.md para a interpretação de cada bloco.
 
 ## Bloco 1: vetores e funções básicas ------------------------------------
 v <- c(10, 20, 30, 40)

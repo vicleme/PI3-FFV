@@ -1,6 +1,6 @@
 # Teoria da Informação e o TF-IDF (2026-08-25)
 
-Código completo: [`05-teoria-informacao-idf.R`](../estrutura/código/05-teoria-informacao-idf.R)
+Código completo: [`05-teoria-informacao-idf.R`](../estrutura/codigo/05-teoria-informacao-idf.R)
 
 ## O que foi feito
 

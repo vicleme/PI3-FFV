@@ -1,10 +1,10 @@
 # Recuperação de Informação (2026-08-14, com atualização de 25/08/2026)
 
 Código completo:
-[`02-toy-corpus-tfidf.R`](../estrutura/código/02-toy-corpus-tfidf.R) ·
-[`03-corpus-cidades-tfidf-busca.R`](../estrutura/código/03-corpus-cidades-tfidf-busca.R) ·
-[`03b-corpus-cidades-paragrafos.R`](../estrutura/código/03b-corpus-cidades-paragrafos.R) ·
-[`04-similaridade-cosseno-cidades.R`](../estrutura/código/04-similaridade-cosseno-cidades.R)
+[`02-toy-corpus-tfidf.R`](../estrutura/codigo/02-toy-corpus-tfidf.R) ·
+[`03-corpus-cidades-tfidf-busca.R`](../estrutura/codigo/03-corpus-cidades-tfidf-busca.R) ·
+[`03b-corpus-cidades-paragrafos.R`](../estrutura/codigo/03b-corpus-cidades-paragrafos.R) ·
+[`04-similaridade-cosseno-cidades.R`](../estrutura/codigo/04-similaridade-cosseno-cidades.R)
 
 ## O que foi feito
 

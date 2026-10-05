@@ -1,10 +1,10 @@
 # Pré-processamento e Índice Invertido (2026-09-12)
 
 Código completo:
-[`07-pre-processamento-indice-invertido.R`](../estrutura/código/07-pre-processamento-indice-invertido.R)
+[`07-pre-processamento-indice-invertido.R`](../estrutura/codigo/07-pre-processamento-indice-invertido.R)
 (corpus real, granularidade de parágrafo — reaproveita `tokenizar_limpo` e
 `stopwords_pt` de
-[`03-corpus-cidades-tfidf-busca.R`](../estrutura/código/03-corpus-cidades-tfidf-busca.R))
+[`03-corpus-cidades-tfidf-busca.R`](../estrutura/codigo/03-corpus-cidades-tfidf-busca.R))
 
 ## O que foi feito
 

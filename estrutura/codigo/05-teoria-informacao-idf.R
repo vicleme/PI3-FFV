@@ -4,7 +4,7 @@
 # de "rotas" entre as 4 cidades da Baixada Santista (Santos, Cubatão,
 # Guarujá, Bertioga) usado só como exemplo didático de permutação — não é o
 # corpus real de estrutura/corpus/.
-# Ver Consolidado/03-teoria-da-informacao-tfidf.md para a interpretação.
+# Ver consolidado-legado/03-teoria-da-informacao-tfidf.md para a interpretação.
 
 ## Bloco 1: o corpus e o bit --------------------------------------------------
 docs <- c(

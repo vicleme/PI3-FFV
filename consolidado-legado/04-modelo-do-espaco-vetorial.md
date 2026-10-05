@@ -1,10 +1,10 @@
 # Modelo do Espaço Vetorial (2026-08-25)
 
 Código completo:
-[`06-modelo-espaco-vetorial-toy.R`](../estrutura/código/06-modelo-espaco-vetorial-toy.R)
+[`06-modelo-espaco-vetorial-toy.R`](../estrutura/codigo/06-modelo-espaco-vetorial-toy.R)
 (corpus de brinquedo) ·
-[`03-corpus-cidades-tfidf-busca.R`](../estrutura/código/03-corpus-cidades-tfidf-busca.R) e
-[`04-similaridade-cosseno-cidades.R`](../estrutura/código/04-similaridade-cosseno-cidades.R)
+[`03-corpus-cidades-tfidf-busca.R`](../estrutura/codigo/03-corpus-cidades-tfidf-busca.R) e
+[`04-similaridade-cosseno-cidades.R`](../estrutura/codigo/04-similaridade-cosseno-cidades.R)
 (corpus real das cidades, reaproveitados sem duplicação)
 
 ## O que foi feito
