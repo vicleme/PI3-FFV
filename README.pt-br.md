@@ -72,6 +72,27 @@ buscados na API a cada execução.
 - `08-bm25.R` — BM25 (saturação de frequência `k1`, normalização de
   tamanho `b`), aplicado ao mesmo corpus e comparado com o ranking de
   TF-IDF + cosseno (Aula 4).
+- `09-concordancia-kappa.R`: kappa de Cohen, par a par, entre os três
+  juízes (victor, flavia, felipe), sobre os 63 parágrafos das 10 consultas.
+- `10-consolidar-qrels.R`: junta os três julgamentos em um gabarito por
+  voto majoritário (mediana quando os três divergem); grava
+  `qrels_consolidado.csv`.
+- `11-rankings-consultas-reais.R`: rankings de três modelos (Booleano
+  ranqueado por nível de coordenação, TF-IDF + cosseno, BM25) para as 10
+  consultas reais, em granularidade de parágrafo; grava `rankings.rds`.
+- `12-metricas-avaliacao.R`: P@k, R@k, AP, RR e nDCG (binário e
+  graduado), validados no exemplo de 8 documentos e aplicados aos rankings
+  com limiar grau >= 2; o resultado do teste vai para um arquivo lacrado.
+- `12b-metricas-estudo.ipynb`: notebook de estudo (kernel R, roda no
+  Colab) com as cinco métricas feitas à mão e depois no gabarito da
+  equipe, comparando cosseno e BM25 nas sete consultas de desenvolvimento,
+  com teste liga/desliga da saturação e da normalização de tamanho do BM25
+  (Aula 5,5).
+- `13-montar-pool.R`: monta a pool (top-10 por modelo, sem repetição) e
+  mostra o que ela teria deixado de fora do gabarito.
+- `14-separar-teste-desenvolvimento.R`: classifica cada consulta por
+  dificuldade e separa 7 de desenvolvimento e 3 de teste por sorteio
+  estratificado com semente fixa; grava `split_teste_desenvolvimento.csv`.
 
 ### `consolidado-legado/`
 Um documento por notebook/aula, descrevendo e interpretando o que foi

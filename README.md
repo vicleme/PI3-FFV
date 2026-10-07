@@ -71,6 +71,26 @@ being fetched from the API on every run.
 - `08-bm25.R` — BM25 (frequency saturation `k1`, length normalization
   `b`), applied to the same corpus and compared against the TF-IDF +
   cosine ranking (Class 4).
+- `09-concordancia-kappa.R`: Cohen's kappa, pairwise, between the three
+  judges (victor, flavia, felipe), over all 63 paragraphs of the 10 queries.
+- `10-consolidar-qrels.R`: merges the three judgments into one gabarito
+  by majority vote (median when all three disagree); writes
+  `qrels_consolidado.csv`.
+- `11-rankings-consultas-reais.R`: rankings of three models (Boolean
+  ranked by coordination level, TF-IDF + cosine, BM25) for the 10 real
+  queries, at paragraph granularity; writes `rankings.rds`.
+- `12-metricas-avaliacao.R`: P@k, R@k, AP, RR and nDCG (binary and
+  graded), validated on the 8-document example and applied to the
+  rankings with threshold grade >= 2; test-set results go to a sealed file.
+- `12b-metricas-estudo.ipynb`: study notebook (R kernel, runs in Colab)
+  with the five metrics computed by hand and then on the team's judgments,
+  comparing cosine and BM25 on the seven development queries, with a BM25
+  on/off test of saturation and length normalization (Class 5.5).
+- `13-montar-pool.R`: builds the pool (top-10 per model, deduplicated)
+  and shows what it would have missed of the gabarito.
+- `14-separar-teste-desenvolvimento.R`: classifies each query by
+  difficulty and splits 7 development / 3 test queries with a stratified,
+  seeded draw; writes `split_teste_desenvolvimento.csv`.
 
 ### `consolidado-legado/`
 One document per notebook/class, describing and interpreting what was
