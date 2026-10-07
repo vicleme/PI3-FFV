@@ -1,0 +1,348 @@
+% ==========================================================
+% ENTREGA 1: O corpus do projeto
+% Projeto Integrador III: Motor de Busca (Ciência de Dados)
+% Fatec Baixada Santista, Rubens Lara
+% Equipe FFV
+% Derivado de modelos/entrega-1-corpus.Rnw (R + knitr + abnTeX2)
+% ==========================================================
+%
+% ONDE ENTREGAR
+%   O PDF e este .Rnw ficam em entregas/ (o professor mudou de ideia em
+%   relação ao "consolidados/" que aparece no modelo). O modelo original,
+%   com o PDF dele, fica em entregas/modelos/.
+%
+% DE ONDE VEM O CORPUS
+%   Este documento lê estrutura/corpus/paragrafos.csv, a divisão em
+%   parágrafos gerada por estrutura/codigo/00b-exportar-paragrafos-csv.R a
+%   partir dos .txt baixados por estrutura/codigo/00-preparar-corpus.R.
+%   O caminho é relativo a entregas/, onde este .Rnw fica.
+%
+% COMO COMPILAR
+%   RStudio: Tools > Global Options > Sweave >
+%            "Weave Rnw files using: knitr" e "Typeset LaTeX into PDF using: pdfLaTeX".
+%            Depois, botão "Compile PDF".
+%   Terminal (a partir de entregas/):
+%            Rscript -e "knitr::knit2pdf('entrega-1-corpus-ffv.Rnw')"
+%
+% ARQUIVOS NECESSÁRIOS NA MESMA PASTA
+%   entrega-1-corpus-ffv.Rnw   (este arquivo)
+%   referencias.bib            (as referências em BibTeX)
+%
+% REQUISITOS
+%   R com knitr; LaTeX com abntex2 (TeX Live: texlive-publishers).
+%   Salve em UTF-8.
+% ==========================================================
+
+\documentclass[
+  article,
+  12pt,
+  oneside,
+  a4paper,
+  english,
+  brazil
+]{abntex2}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{icomma}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[alf]{abntex2cite}
+
+\hypersetup{hidelinks}
+
+% Evita que trechos em \texttt (caminhos, nomes de arquivo) estourem a margem.
+\setlength{\emergencystretch}{3em}
+
+% ----------------------------------------------------------
+% DADOS DA ENTREGA
+% ----------------------------------------------------------
+\titulo{O corpus do projeto: a Baixada Santista nos verbetes da Wikipédia}
+\tituloestrangeiro{}
+\autor{Equipe FFV}
+\local{Santos-SP}
+\data{\today}
+
+\newcommand{\nomecurso}{Tecnologia em Ciência de Dados}
+\newcommand{\nomedisciplina}{Projeto Integrador III: Motor de Busca}
+\newcommand{\nomeprofessor}{Prof.\ Dr.\ João Paulo Ferreira de Mello}
+\newcommand{\repositorio}{vicleme/PI3-FFV}
+% Um integrante por linha: Nome Completo, RA
+\newcommand{\integrantes}{%
+  Felipe Steinfeld, RA 0051352511017 \\
+  Flávia Alessandra da Silva Barbosa, RA 0051352511018 \\
+  Victor Gabriel Leme da Silva, RA 0051352421012%
+}
+
+\begin{document}
+
+<<setup, include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+  echo       = FALSE,   # o codigo NAO aparece: ele mora em estrutura/codigo/
+  message    = FALSE,
+  warning    = FALSE,
+  fig.align  = "center",
+  out.width  = "0.38\\linewidth",
+  fig.width  = 4,
+  fig.height = 2.0
+)
+options(OutDec = ",", digits = 4)
+# Garante UTF-8 na sessao (evita <U+00E9> no lugar de acentos). No Windows
+# o aviso e inofensivo.
+suppressWarnings(try(Sys.setlocale("LC_ALL", "C.UTF-8"), silent = TRUE))
+@
+
+<<dados, include=FALSE>>=
+# =========================================================================
+#  O corpus do grupo: 63 paragrafos dos verbetes de Santos, Cubatao e
+#  Guaruja, lidos de estrutura/corpus/paragrafos.csv.
+# =========================================================================
+caminhos <- c("../estrutura/corpus/paragrafos.csv",
+              "estrutura/corpus/paragrafos.csv")
+arquivo  <- caminhos[file.exists(caminhos)][1]
+if (is.na(arquivo)) stop("paragrafos.csv nao encontrado. Compile a partir de entregas/.")
+tab <- read.csv(arquivo, fileEncoding = "UTF-8", stringsAsFactors = FALSE)
+
+docs   <- setNames(tab$texto, tab$doc_id)
+origem <- tab$cidade
+corpus_de_teste <- FALSE
+
+# REGRA: nada de acento dentro de string de R -- o acento quebra quando a
+# sessao do R nao esta em locale UTF-8. Onde precisar, escreva o acento em
+# LaTeX ("m\\'edia"): o \Sexpr repassa intacto.
+nome_pag <- c(Santos = "Santos", Cubatao = "Cubat\\~ao", Guaruja = "Guaruj\\'a")
+
+# formatos brasileiros: virgula decimal e ponto de milhar
+vir <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",")
+mil <- function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE)
+
+# --- a cadeia da Aula 01, sobre o corpus ---------------------------------
+tokenizar <- function(texto) unlist(strsplit(tolower(texto), "\\s+"))
+tokens <- lapply(docs, tokenizar)
+tam    <- sapply(tokens, length)                 # tokens por documento
+vocab  <- sort(unique(unlist(tokens)))
+freq   <- sort(table(unlist(tokens)), decreasing = TRUE)
+
+n_docs   <- length(docs)
+n_pags   <- length(unique(origem))
+n_vocab  <- length(vocab)
+n_tokens <- sum(tam)
+min_char <- min(nchar(docs))
+quartis  <- quantile(tam, c(0.25, 0.75))
+
+# --- os textos prontos para o \Sexpr -------------------------------------
+texto_tam   <- paste0(min(tam), " a ", max(tam), " (m\\'edia ", vir(mean(tam)), ")")
+top10       <- names(freq)[1:10]
+texto_top10 <- paste0("\\texttt{", gsub("([%&_#$])", "\\\\\\1", top10), "}", collapse = ", ")
+
+# documentos por pagina, e quem domina
+por_pag   <- sort(table(origem), decreasing = TRUE)
+pct_dom   <- as.integer(round(100 * por_pag[1] / n_docs))
+texto_dom <- paste0(nome_pag[[names(por_pag)[1]]], ": ", por_pag[1], " de ", n_docs,
+                    " (", pct_dom, "\\%)")
+
+# documentos curtos e longos demais (suspeitos de nao serem prosa)
+curtos <- sum(tam < 20)
+longos <- sum(tam > 300)
+texto_extremos <- paste0(curtos, " com menos de 20 tokens; ", longos, " com mais de 300")
+
+# sinais de sujeira: acentos, pontuacao grudada, digitos
+tem_acento <- sum(grepl("[^ -~]", docs))
+tem_pont   <- sum(grepl("[[:punct:]]", docs))
+tem_dig    <- sum(grepl("[0-9]", docs))
+texto_sujo <- paste0(tem_acento, " com acento, ", tem_pont, " com pontua\\c{c}\\~ao, ",
+                     tem_dig, " com d\\'igitos (de ", n_docs, ")")
+
+# paragrafos que sao quase so numeros (listas de indicadores)
+n_dig_doc <- sapply(gregexpr("[0-9]", docs), function(m) sum(m > 0))
+numericos <- names(docs)[n_dig_doc >= 40]
+
+# tabela de origem
+tab_origem <- data.frame(
+  Pagina     = nome_pag[names(por_pag)],
+  Documentos = as.integer(por_pag),
+  Tokens     = vir(tapply(tam, origem, mean)[names(por_pag)]),
+  row.names  = NULL
+)
+names(tab_origem) <- c("P\\'agina", "Documentos", "Tokens (m\\'edia)")
+@
+
+\selectlanguage{brazil}
+\frenchspacing
+
+% ----------------------------------------------------------
+% IDENTIFICAÇÃO
+% (bloco compacto no lugar do \maketitle, para caber nas 3 páginas)
+% ----------------------------------------------------------
+\begin{center}
+  {\large\bfseries O corpus do projeto: a Baixada Santista nos verbetes da Wikipédia\par}
+  \vspace{0.4em}
+  Equipe FFV \quad|\quad \today \\[0.5em]
+  \small
+  Fatec Baixada Santista, Rubens Lara \quad|\quad \nomecurso{} \\
+  \nomedisciplina{} \quad|\quad \nomeprofessor{} \\[0.3em]
+  \integrantes \\[0.3em]
+  Repositório: \url{https://github.com/\repositorio}
+\end{center}
+
+\textual
+
+% ==========================================================================
+\section{Introdução}
+% ==========================================================================
+
+Este projeto constrói, em R e sem bibliotecas de busca, um motor de busca sobre
+a Baixada Santista (SP), região da Fatec que abriga o maior porto da América
+Latina e um grande polo industrial. Quem o usaria é, por exemplo, um estudante,
+um morador ou um visitante que precisa de um fato pontual (um ano, um número, um
+nome) e não quer ler três verbetes inteiros para achá-lo. Em recuperação de
+informação (RI), atende-se a \emph{necessidade de informação} de alguém, não a
+consulta literal \cite[cap.~1]{manning2008}; por isso as perguntas vêm antes do
+corpus. Três delas guiam este texto: qual cidade abriga o maior
+porto da América Latina, em que ano Cubatão se tornou município e como funciona
+a travessia de balsa entre Santos e Guarujá (são dez no total). Este texto
+apresenta a fonte, descreve como o corpus foi montado e mostra que ele serve.
+
+% ==========================================================================
+\section{A fonte e o documento}
+% ==========================================================================
+
+O texto vem da Wikipédia em português, sob a licença Creative Commons
+Atribuição-CompartilhaIgual (CC BY-SA), que permite guardá-lo e redistribuí-lo
+no repositório com atribuição. As páginas são os verbetes \emph{Santos}
+\cite{wikiSantos}, \emph{Cubatão} \cite{wikiCubatao} e \emph{Guarujá}
+\cite{wikiGuaruja}, acessados em ago.\ de 2026. São cidades vizinhas, ligadas
+pelo porto e pela travessia, e os verbetes se cruzam: o de Guarujá cita Cubatão
+como distrito industrial, e a resposta pode estar na página vizinha.
+
+Um documento é um parágrafo do verbete, isto é, um bloco separado por linha em
+branco, identificado como \texttt{Santos\_p1}, \texttt{Santos\_p2} e assim por
+diante. É a menor unidade que responde sozinha a uma pergunta: o verbete inteiro
+faria a busca dizer ``está em Santos'' sem dizer onde, e uma frase isolada
+perderia o contexto \cite[seç.~2.1.2]{manning2008}. O corpus tem
+$N = \Sexpr{n_docs}$ documentos de \Sexpr{n_pags} páginas.
+
+% CONFIRMAR COM O GRUPO: a alternativa descartada abaixo é uma proposta de
+% redação, o histórico do repositório não registra essa discussão.
+Escolhemos o tema por proximidade (a região é a da faculdade), por
+disponibilidade (texto aberto, em português, obtido por API, sem raspagem) e
+porque os verbetes se sobrepõem, o que dá ao motor algo a distinguir.
+Descartamos notícias de jornais regionais, que têm direitos reservados e
+exigiriam raspagem, o que impediria redistribuir o corpus.
+
+% ==========================================================================
+\section{Como o corpus foi obtido}
+% ==========================================================================
+
+O script \texttt{00-preparar-corpus.R} consulta a API da Wikipédia (extratos em
+texto puro, com redirecionamentos) para os três títulos e grava cada resposta em
+UTF-8 em \texttt{estrutura/\allowbreak corpus/}. Depois, \texttt{utils-corpus.R} quebra cada
+texto em parágrafos nas linhas em branco, apara espaços e descarta blocos
+vazios, e o resultado é exportado para \texttt{paragrafos.csv}. Não usamos
+limiar de tamanho: o menor parágrafo tem \Sexpr{min_char} caracteres, então um
+corte em 200, como o do modelo, não removeria nenhum.
+
+Três coisas deram errado. O corpus nasceu com um documento por cidade, apenas
+três, escala muito maior que a das frases curtas de exemplo; o professor apontou
+o descompasso e passamos aos parágrafos. Os verbetes eram baixados da API a cada
+execução, deixando os resultados à mercê da rede e de edições na Wikipédia;
+passamos a gravar os \texttt{.txt} e lê-los do disco, o que fixa uma versão.
+Por fim, no primeiro TF-IDF, os termos de maior peso de Cubatão incluíram nomes
+próprios citados de passagem (como ``passarelli'' e ``marcia''), raros mas sem
+relação com a cidade; é um limite do modelo, e não da coleta, e fica registrado.
+
+% ==========================================================================
+\section{Defesa do corpus}
+% ==========================================================================
+
+As Tabelas~\ref{tab:diag} e~\ref{tab:origem} reúnem o diagnóstico do corpus e a
+origem dos documentos.
+
+\begin{table}[htb]
+  \centering
+  \caption{Diagnóstico do corpus}
+  \label{tab:diag}
+  \small
+  \begin{tabular}{@{}p{0.30\textwidth}p{0.62\textwidth}@{}}
+    \toprule
+    \textbf{Verificação} & \textbf{Resultado} \\
+    \midrule
+    Tamanho               & $\Sexpr{n_docs}$ documentos de $\Sexpr{n_pags}$ páginas \\
+    Tokens por documento  & \Sexpr{texto_tam} \\
+    Vocabulário bruto     & \Sexpr{mil(n_vocab)} termos distintos em \Sexpr{mil(n_tokens)} tokens \\
+    Página que domina     & \Sexpr{texto_dom} \\
+    Documentos suspeitos  & \Sexpr{texto_extremos} \\
+    Sujeira               & \Sexpr{texto_sujo} \\
+    \bottomrule
+  \end{tabular}
+  \fonte{Elaborada pelos autores a partir de \texttt{paragrafos.csv}.}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{Documentos por página de origem}
+  \label{tab:origem}
+  \small
+<<tab-origem, results="asis">>=
+kable(tab_origem, format = "latex", booktabs = TRUE, row.names = FALSE, escape = FALSE)
+@
+  \fonte{Elaborada pelos autores.}
+\end{table}
+
+\textbf{Tamanho e domínio.} São $\Sexpr{n_docs}$ documentos, três acima do teto
+de 60 da entrega, por dividir em parágrafos; mantivemos todos. Nenhuma página
+domina: Santos tem \Sexpr{pct_dom}\% dos documentos, contra
+\Sexpr{as.integer(por_pag[2])} de cada uma das outras, por ter o verbete mais longo.
+
+\textbf{Documentos que não são prosa.} Nenhum documento é curto ou longo demais
+(de \Sexpr{min(tam)} a \Sexpr{max(tam)} tokens), mas, ao conferir os últimos
+parágrafos de cada verbete, vimos que
+\texttt{\Sexpr{gsub("_", "\\\\_", numericos[1])}} e
+\texttt{\Sexpr{gsub("_", "\\\\_", numericos[2])}} são listas de indicadores do
+Censo de 2010 em frases curtas. Mantivemos os dois: o de Cubatão responde à
+pergunta sobre a população da cidade pelo Censo.
+
+\textbf{Sujeira.} Acentos, pontuação e dígitos aparecem como esperado em texto
+bruto; a normalização fica para o pré-processamento. A
+Figura~\ref{fig:tam} mostra que metade dos documentos tem entre
+\Sexpr{floor(quartis[1])} e \Sexpr{ceiling(quartis[2])} tokens, sem cauda longa.
+
+\begin{figure}[htb]
+  \centering
+  \caption{Tokens por documento}
+  \label{fig:tam}
+<<fig-tam>>=
+par(mar = c(4, 4, 0.5, 1))
+hist(tam, breaks = 15, col = "#D6EAF3", border = "white",
+     main = "", xlab = "tokens por documento", ylab = "documentos")
+@
+  \fonte{Elaborada pelos autores.}
+\end{figure}
+
+\textbf{Os termos mais frequentes} são \Sexpr{texto_top10}: todos palavras
+funcionais, nenhum diz algo sobre o tema. Isso motiva o pré-processamento e o peso IDF.
+
+\textbf{Veredito.} As dez necessidades têm ao menos um parágrafo de grau 2 (que
+responde) no gabarito, 14 ao todo, julgados pelos três integrantes sobre 630
+pares de consulta e documento: três para o porto (\texttt{Santos\_p1},
+\texttt{p18} e \texttt{p19}), dois para a emancipação de Cubatão
+(\texttt{Cubatao\_p8} e \texttt{p9}) e um para a balsa (\texttt{Guaruja\_p19}).
+O corpus contém, portanto, as respostas; o que falta é ranqueá-las, e a pergunta
+sobre o polo industrial, que o verbete chama de ``parque industrial'', já mostra
+essa dificuldade. A concordância entre os juízes, medida pelo $\kappa$ de
+\citeonline{cohen1960}, foi moderada a boa (0,50 a 0,62), limitada por não
+termos combinado critérios antes de julgar. Nenhum descarte removeu documentos e, como o
+gabarito foi julgado sobre estes 63, mudar o corpus obrigaria a rejulgar tudo;
+as próximas etapas devem mexer nos modelos, não nos documentos.
+
+% ----------------------------------------------------------
+% REFERÊNCIAS: não contam nas 3 páginas.
+% ----------------------------------------------------------
+\postextual
+\clearpage
+\bibliography{referencias}
+
+\end{document}
