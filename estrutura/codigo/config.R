@@ -55,6 +55,10 @@ cfg <- list(
   limiar = 2,                   # grau minimo para contar como relevante
   juizes = "consenso",          # gabarito = voto majoritario dos tres juizes (qrels_consenso.csv)
 
+  # --- Aula 06: realimentacao ---------------------------------------------
+  prf_k   = 0,                            # 0 = sem pseudo-realimentacao; k = usa os top-k
+  rocchio = c(a = 1, b = 0.75, g = 0.15), # pesos do Rocchio
+
   # --- fim ----------------------------------------------------------------
   grupo = "FFV"                 # ultimo campo, sem virgula depois
 )
