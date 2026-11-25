@@ -32,6 +32,7 @@ Minha leitura: o aluno aprende bem quando faz a conta à mão e vê o número ap
 
 
 
+<!-- estado-R:inicio -->
 ## Estado do R ao fim da sessão
 
 *gerado por `anexar_estado()` em 2026-11-25 00:02 · R version 4.6.1 (2026-06-24) · motor06 v2 2026-10-08 · não edite à mão*
@@ -99,3 +100,4 @@ Minha leitura: o aluno aprende bem quando faz a conta à mão e vê o número ap
 ### Funções definidas
 
 `anexar_estado`, `ap`, `bm25`, `bm25_doc`, `busca_AND`, `busca_booleana`, `cfg_aula`, `cosseno`, `dcg`, `docs_aula`, `estado`, `gabarito_aula`, `idf_bm25`, `idf_classico`, `indice_invertido`, `kappa_cohen`, `kappa_matriz`, `ler_qrels`, `limpar`, `matriz_tf`, `metricas`, `montar`, `ndcg`, `norm_cols`, `precisao_k`, `preparar`, `ranking_bm25`, `ranking_cosseno`, `ranking_vetor`, `recall_k`, `relevancia`, `rocchio`, `rr`, `saturacao`, `sem_stop`, `stopwords_aula`, `tokenizar`, `vetor_consulta`
+<!-- estado-R:fim -->
