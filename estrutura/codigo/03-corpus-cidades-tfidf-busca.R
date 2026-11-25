@@ -38,7 +38,7 @@ stopwords_pt <- c(
 
 tokenizar_limpo <- function(texto) {
   texto <- tolower(texto)
-  texto <- iconv(texto, to = "ASCII//TRANSLIT")
+  texto <- sem_acentos(texto)
   texto <- gsub("[^a-z\\s]", " ", texto)
   tk <- unlist(strsplit(texto, "\\s+"))
   tk <- tk[nchar(tk) > 1]
@@ -85,7 +85,7 @@ print(round(top_termos_cidade("Guaruja", 8), 2))
 ## Bloco 6: consultas e busca booleana ---------------------------------------------
 busca_cidades <- function(termo, tdm) {
   termo <- tolower(termo)
-  termo <- iconv(termo, to = "ASCII//TRANSLIT")
+  termo <- sem_acentos(termo)
   if (!termo %in% rownames(tdm)) return("Termo não encontrado no vocabulário")
   docs_encontrados <- colnames(tdm)[tdm[termo, ] > 0]
   return(docs_encontrados)

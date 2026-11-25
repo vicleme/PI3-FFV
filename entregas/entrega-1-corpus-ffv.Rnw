@@ -225,8 +225,6 @@ faria a busca dizer ``está em Santos'' sem dizer onde, e uma frase isolada
 perderia o contexto \cite[seç.~2.1.2]{manning2008}. O corpus tem
 $N = \Sexpr{n_docs}$ documentos de \Sexpr{n_pags} páginas.
 
-% CONFIRMAR COM O GRUPO: a alternativa descartada abaixo é uma proposta de
-% redação, o histórico do repositório não registra essa discussão.
 Escolhemos o tema por proximidade (a região é a da faculdade), por
 disponibilidade (texto aberto, em português, obtido por API, sem raspagem) e
 porque os verbetes se sobrepõem, o que dá ao motor algo a distinguir.

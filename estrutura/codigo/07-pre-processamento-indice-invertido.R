@@ -22,7 +22,7 @@ length(docs)
 # tokenizar ainda) para conferir o "antes/depois" de um parágrafo real.
 limpar <- function(x) {
   x <- tolower(x)
-  x <- iconv(x, to = "ASCII//TRANSLIT")
+  x <- sem_acentos(x)
   x <- gsub("[^a-z0-9 ]", " ", x)
   x <- gsub("\\s+", " ", x)
   trimws(x)

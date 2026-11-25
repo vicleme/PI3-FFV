@@ -22,13 +22,17 @@ with its text).
 
 ```
 estrutura/
-  corpus/            .txt files of the Wikipedia entries (Santos, Cubatão, Guarujá)
-  codigo/             R scripts, split by class/block
-consolidado-legado/   one .md per class, written by the group, interpreting what was done
+  corpus/              .txt files of the Wikipedia entries (Santos, Cubatão, Guarujá) and paragrafos.csv
+  codigo/              numbered R scripts, the group notebooks (aulaXX.ipynb) and config.R
+  banco-de-dados/      the data the engine reads and writes: corpus, qrels, rankings, metrics
+  ferramenta/          julgar.html, the page the judges used to grade relevance
+entregas/              course deliverables (Entrega 1: .Rnw, .pdf, .bib)
+consolidado-legado/    one .md per class, written by the group, interpreting what was done
                        (little code, focused on the learning/project takeaways)
-consolidados/         reports from the AI study-guide sessions (from Class 5.5 on)
-trash/                discontinued files, kept at the professor's request
-README.md             this file
+consolidados/          00_FICHA_PROJETO.md and the reports from the AI study-guide sessions
+                       (from Class 5.5 on); see consolidados/README.md
+trash/                 discontinued files, kept at the professor's request
+README.md              this file
 README.pt-br.md        Portuguese version of this file
 ```
 
@@ -43,12 +47,48 @@ being fetched from the API on every run.
 `paragrafo_num`, `n_caracteres`, `texto`), exported by
 `estrutura/codigo/00b-exportar-paragrafos-csv.R` for inspection outside R.
 
+### `estrutura/banco-de-dados/`
+Files the engine reads and writes, in the format the course study guides
+expect: `corpus.csv` (`id`, `texto`, one row per paragraph), `origem.rds`
+(which entry each document came from), `necessidades.csv` (the 10 queries,
+with a `conjunto` column: `dev` or `teste`), the relevance judgments
+(`qrels_equipe.csv` with the three judges, one `qrels_<judge>_<date>.csv`
+per judge, and `qrels_consolidado.csv` / `qrels_consenso.csv` for the
+majority-vote gabarito), `rankings.rds`, and the metrics. The test-set
+metrics are in `metricas_teste_LACRADO_nao_abrir.csv`: sealed until the
+final report.
+
+### `estrutura/ferramenta/`
+`julgar.html`: the page the three judges used to grade each query-paragraph
+pair (grades 0, 1 and 2).
+
+### `entregas/`
+Course deliverables. Entrega 1 (the corpus): `entrega-1-corpus-ffv.Rnw`
+(source), its PDF and `referencias.bib`.
+
 ### `estrutura/codigo/`
+Two kinds of files live here, and the names tell them apart:
+
+- **`NN-name.R`** (numbered scripts): the group's own project code, written
+  as the classes went on. These are the engine.
+- **`aulaXX.ipynb`** (notebooks): the record of each group study session
+  ("Parte D" of the study guides), run in Colab on the course engine
+  (`motor06`). The one existing before the guides is `12b-metricas-estudo.ipynb`
+  (Class 5.5). Individual theory notebooks are not kept here.
+- `config.R`: the group's decisions as R values (accent handling, stopwords,
+  BM25 `k1` and `b`, relevance threshold). The project sheet
+  `consolidados/00_FICHA_PROJETO.md` says the same decisions in prose, and
+  the two must agree.
+
+Scripts:
+
 - `00-preparar-corpus.R` — downloads the Wikipedia entries and writes them
   to `estrutura/corpus/`.
 - `utils-corpus.R` — shared functions to load the saved corpus, at the two
   granularities used in the project: `$texto` (1 document per city) and
-  `$docs` (1 document per paragraph).
+  `$docs` (1 document per paragraph); also `sem_acentos()`, which strips
+  accents the same way on any computer (it replaced `iconv`, which turns
+  accented letters into `?` in some environments).
 - `00b-exportar-paragrafos-csv.R` — exports the paragraph split to
   `estrutura/corpus/paragrafos.csv`.
 - `01-intro-r.R` — R syntax exercises (Class 1).
@@ -99,8 +139,11 @@ learning and for the search engine project. Written by the group before the
 AI study guides existed.
 
 ### `consolidados/`
-One report per AI study-guide session (from Class 5.5 on), following the
-file names the guides define (e.g. `aula05b_consolidado.md`).
+The project sheet (`00_FICHA_PROJETO.md`) and one report per AI study-guide
+session (from Class 5.5 on). Group-session reports sit directly in the
+folder; theory sessions go in a folder named after who did them
+(`equipe/` when done together, `victor/` when done alone). See
+`consolidados/README.md`.
 
 ### `trash/`
 Discontinued files, kept at the professor's request for historical record

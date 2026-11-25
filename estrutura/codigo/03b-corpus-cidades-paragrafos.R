@@ -23,7 +23,7 @@ table(sub("_p\\d+$", "", names(cidades_docs_par))) # quantos parágrafos por cid
 ## Tokenização (reaproveita a mesma função de limpeza do script anterior) -----
 tokenizar_limpo <- function(texto) {
   texto <- tolower(texto)
-  texto <- iconv(texto, to = "ASCII//TRANSLIT")
+  texto <- sem_acentos(texto)
   texto <- gsub("[^a-z\\s]", " ", texto)
   tk <- unlist(strsplit(texto, "\\s+"))
   tk <- tk[nchar(tk) > 1]

@@ -39,3 +39,21 @@ carregar_corpus <- function(pasta = file.path("estrutura", "corpus")) {
 
   list(texto = cidades_texto, docs = cidades_docs)
 }
+
+# Tira os acentos e põe em minúsculas, igual em qualquer computador.
+# Por que não iconv(x, to = "ASCII//TRANSLIT"): o resultado dele depende do
+# idioma configurado na máquina. Em alguns ambientes (Windows, servidores
+# sem locale UTF-8) cada letra acentuada vira "?", e "Guarujá" vira "guaruj",
+# que não casa com a consulta "guaruja". Aqui a troca é feita à mão, byte a
+# byte, e dá o mesmo resultado em qualquer lugar. (Corrigido na Aula 06.)
+sem_acentos <- function(x) {
+  de <- intToUtf8(c(0xe1, 0xe0, 0xe2, 0xe3, 0xe4, 0xe9, 0xe8, 0xea, 0xeb, 0xed, 0xec, 0xee, 0xef,
+                    0xf3, 0xf2, 0xf4, 0xf5, 0xf6, 0xfa, 0xf9, 0xfb, 0xfc, 0xe7, 0xf1,
+                    0xc1, 0xc0, 0xc2, 0xc3, 0xc4, 0xc9, 0xc8, 0xca, 0xcb, 0xcd, 0xcc, 0xce, 0xcf,
+                    0xd3, 0xd2, 0xd4, 0xd5, 0xd6, 0xda, 0xd9, 0xdb, 0xdc, 0xc7, 0xd1),
+                  multiple = TRUE)
+  para <- rep(strsplit("aaaaaeeeeiiiiooooouuuucn", "")[[1]], 2)   # maiúscula acentuada vira minúscula sem acento
+  x <- enc2utf8(x)
+  for (i in seq_along(de)) x <- gsub(de[i], para[i], x, fixed = TRUE, useBytes = TRUE)
+  tolower(x)
+}

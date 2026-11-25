@@ -48,7 +48,7 @@ stopwords_pt <- c(
 
 tokenizar_limpo <- function(texto) {
   texto <- tolower(texto)
-  texto <- iconv(texto, to = "ASCII//TRANSLIT")
+  texto <- sem_acentos(texto)
   texto <- gsub("[^a-z\\s]", " ", texto)
   tk <- unlist(strsplit(texto, "\\s+"))
   tk <- tk[nchar(tk) > 1]

@@ -23,13 +23,17 @@ quando o vocabulário da consulta não tem sobreposição com o texto dela).
 
 ```
 estrutura/
-  corpus/            .txt dos verbetes da Wikipédia (Santos, Cubatão, Guarujá)
-  codigo/             scripts em R, separados por aula/bloco
-consolidado-legado/   um .md por aula, escritos pelo grupo, com a interpretação do que foi feito
+  corpus/              .txt dos verbetes da Wikipédia (Santos, Cubatão, Guarujá) e paragrafos.csv
+  codigo/              scripts em R numerados, notebooks do grupo (aulaXX.ipynb) e config.R
+  banco-de-dados/      os dados que o motor lê e grava: corpus, qrels, rankings, métricas
+  ferramenta/          julgar.html, a página que os juízes usaram para dar as notas
+entregas/              entregas da disciplina (Entrega 1: .Rnw, .pdf, .bib)
+consolidado-legado/    um .md por aula, escritos pelo grupo, com a interpretação do que foi feito
                        (pouco código, foco no aprendizado e no projeto)
-consolidados/         relatórios das sessões dos guias de estudo com IA (da Aula 5,5 em diante)
-trash/                arquivos descontinuados, mantidos por pedido do professor
-README.md             versão em inglês (principal) deste arquivo
+consolidados/          00_FICHA_PROJETO.md e os relatórios das sessões dos guias de estudo
+                       com IA (da Aula 5,5 em diante); ver consolidados/README.md
+trash/                 arquivos descontinuados, mantidos por pedido do professor
+README.md              versão em inglês (principal) deste arquivo
 README.pt-br.md        este arquivo
 ```
 
@@ -44,12 +48,47 @@ buscados na API a cada execução.
 `paragrafo_num`, `n_caracteres`, `texto`), exportada por
 `estrutura/codigo/00b-exportar-paragrafos-csv.R` para consulta fora do R.
 
+### `estrutura/banco-de-dados/`
+Arquivos que o motor lê e grava, no formato que os guias da disciplina
+esperam: `corpus.csv` (`id`, `texto`, uma linha por parágrafo), `origem.rds`
+(de qual verbete veio cada documento), `necessidades.csv` (as 10 consultas,
+com a coluna `conjunto`: `dev` ou `teste`), os julgamentos de relevância
+(`qrels_equipe.csv` com os três juízes, um `qrels_<juiz>_<data>.csv` por
+juiz, e `qrels_consolidado.csv` / `qrels_consenso.csv` para o gabarito por
+voto majoritário), `rankings.rds` e as métricas. As métricas do teste estão
+em `metricas_teste_LACRADO_nao_abrir.csv`: lacradas até o relatório final.
+
+### `estrutura/ferramenta/`
+`julgar.html`: a página em que os três juízes deram a nota de cada par
+consulta-parágrafo (graus 0, 1 e 2).
+
+### `entregas/`
+Entregas da disciplina. Entrega 1 (o corpus): `entrega-1-corpus-ffv.Rnw`
+(fonte), o PDF e `referencias.bib`.
+
 ### `estrutura/codigo/`
+Moram aqui dois tipos de arquivo, e o nome diz qual é qual:
+
+- **`NN-nome.R`** (scripts numerados): o código do próprio projeto do grupo,
+  escrito ao longo das aulas. É o motor.
+- **`aulaXX.ipynb`** (notebooks): o registro de cada sessão de estudo em
+  grupo ("Parte D" dos guias), rodada no Colab com o motor da disciplina
+  (`motor06`). O que existia antes dos guias é o `12b-metricas-estudo.ipynb`
+  (Aula 5,5). Notebooks individuais de teoria não ficam aqui.
+- `config.R`: as decisões do grupo como valores em R (tratamento de acentos,
+  stopwords, `k1` e `b` do BM25, limiar de relevância). A ficha do projeto,
+  `consolidados/00_FICHA_PROJETO.md`, diz as mesmas decisões em prosa, e as
+  duas têm que bater.
+
+Scripts:
+
 - `00-preparar-corpus.R` — baixa os verbetes da Wikipédia e grava em
   `estrutura/corpus/`.
 - `utils-corpus.R` — funções compartilhadas para carregar o corpus salvo,
   nas duas granularidades usadas no projeto: `$texto` (1 documento por
-  cidade) e `$docs` (1 documento por parágrafo).
+  cidade) e `$docs` (1 documento por parágrafo); também `sem_acentos()`,
+  que tira os acentos do mesmo jeito em qualquer computador (ela substituiu
+  o `iconv`, que em alguns ambientes troca letra acentuada por `?`).
 - `00b-exportar-paragrafos-csv.R` — exporta a divisão em parágrafos para
   `estrutura/corpus/paragrafos.csv`.
 - `01-intro-r.R` — exercícios de sintaxe do R (Aula 1).
@@ -101,8 +140,11 @@ aprendizado e para o projeto do motor de busca. Escritos pelo grupo antes dos
 guias de estudo com IA.
 
 ### `consolidados/`
-Um relatório por sessão dos guias de estudo com IA (da Aula 5,5 em diante),
-com os nomes que os guias definem (ex.: `aula05b_consolidado.md`).
+A ficha do projeto (`00_FICHA_PROJETO.md`) e um relatório por sessão dos
+guias de estudo com IA (da Aula 5,5 em diante). Os relatórios de sessão em
+grupo ficam direto na pasta; os de teoria vão numa pasta com o nome de quem
+fez (`equipe/` quando feita junto, `victor/` quando feita sozinho). Ver
+`consolidados/README.md`.
 
 ### `trash/`
 Arquivos descontinuados, mantidos por pedido do professor para fins de

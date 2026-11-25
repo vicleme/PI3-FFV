@@ -1,10 +1,20 @@
 # consolidados
 
-Relatórios gerados ao fim de cada sessão de estudo com IA, a partir dos guias da disciplina (da Aula 5,5 em diante). São relatos, em três partes, de como a pessoa aprendeu na sessão. Não são resumo da matéria nem interpretação do projeto (essa fica em `../consolidado-legado/`).
+Aqui ficam a ficha do projeto e os relatórios gerados ao fim de cada sessão de estudo com IA, a partir dos guias da disciplina (da Aula 5,5 em diante). Os relatórios são relatos, em três partes, de como a pessoa aprendeu na sessão. Não são resumo da matéria nem interpretação do projeto (essa fica em `../consolidado-legado/`).
 
-Nomes, como os guias definem:
+## Onde cada arquivo fica
 
-1. `aula05b_consolidado.md` (teoria da Aula 5,5)
-2. `aula05b_parteD_consolidado.md` (Parte D, métricas no gabarito)
+| arquivo | o que é |
+|---|---|
+| `00_FICHA_PROJETO.md` | a ficha do projeto, atualizada a cada Parte D |
+| `aula05b_parteD_consolidado.md` | Parte D da Aula 5,5 (sessão em grupo) |
+| `aula06_parteD_consolidado.md` | Parte D da Aula 06 (sessão em grupo; a gerar) |
+| `equipe/aula05b_consolidado.md` | teoria da Aula 5,5, feita em conjunto |
+| `victor/aula06_consolidado.md` | teoria da Aula 06, feita individualmente |
 
-Se mais de uma pessoa salvar no repositório, acrescentar o nome no fim (`aula05b_parteD_consolidado_victor.md`).
+## Regras
+
+- **Parte D (grupo):** direto em `consolidados/`, com o nome que o guia define.
+- **Teoria feita por uma pessoa:** em `consolidados/<nome>/`, com o nome do guia (`aulaXX_consolidado.md`). Cada integrante que fizer a teoria sobe o seu na própria pasta.
+- **Teoria feita em conjunto:** em `consolidados/equipe/`.
+- **Notebooks das Partes D** (`aulaXX.ipynb`) não ficam aqui: vão em `../estrutura/codigo/`.
