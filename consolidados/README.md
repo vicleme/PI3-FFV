@@ -9,6 +9,7 @@ Aqui ficam a ficha do projeto e os relatórios gerados ao fim de cada sessão de
 | `00_FICHA_PROJETO.md` | a ficha do projeto, atualizada a cada Parte D |
 | `aula05b_parteD_consolidado.md` | Parte D da Aula 5,5 (sessão em grupo) |
 | `aula06_parteD_consolidado.md` | Parte D da Aula 06 (sessão em grupo) |
+| `aula07_parteD_consolidado.md` | Parte D da Aula 07 (sessão em grupo) |
 | `equipe/aula05b_consolidado.md` | teoria da Aula 5,5, feita em conjunto |
 | `equipe/aula07_consolidado.md` | teoria da Aula 07, feita em conjunto |
 | `victor/aula06_consolidado.md` | teoria da Aula 06, feita individualmente |

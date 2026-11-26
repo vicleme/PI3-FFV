@@ -59,6 +59,11 @@ cfg <- list(
   prf_k   = 0,                            # 0 = sem pseudo-realimentacao; k = usa os top-k
   rocchio = c(a = 1, b = 0.75, g = 0.15), # pesos do Rocchio
 
+  # --- Aula 07: LSA e busca hibrida --------------------------------------
+  modelo = "bm25",                        # "bm25", "lsa" ou "hibrido": decisao do grupo (MAP dev 0,635; teste 0,150)
+  lsa_k  = 40,                            # melhor k testado (5, 10, 20, 40); registrado, nao usado
+  rrf_c  = 60,                            # constante da fusao RRF; registrada, nao usada
+
   # --- fim ----------------------------------------------------------------
   grupo = "FFV"                 # ultimo campo, sem virgula depois
 )

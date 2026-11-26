@@ -1,6 +1,6 @@
 # Ficha do projeto: Equipe FFV
 
-*reconstruída na Aula 06 em 2026-11-24 (o modelo `FICHA_PROJETO_modelo.md` não foi entregue e a ficha não foi criada na Parte D da Aula 01) · última atualização: 2026-11-25 (confirmação da PRF; modo de trabalho da Aula 07 em diante), motor06*
+*reconstruída na Aula 06 em 2026-11-24 (o modelo `FICHA_PROJETO_modelo.md` não foi entregue e a ficha não foi criada na Parte D da Aula 01) · última atualização: Aula 07 Parte D, 2026-11-25, motor07*
 
 > **Como ler esta reconstrução.** Tudo aqui vem de arquivos do repositório (scripts, CSVs, consolidados do legado, entrega 1). O que o repositório não registra ficou como `—`. O que só o grupo pode confirmar ficou como **CONFIRMAR**. A seção 8 ("Estado do R") não existe ainda: é gerada por `anexar_estado()` no fim da sessão.
 
@@ -82,7 +82,7 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 | o que | aula | arquivo | estado |
 |---|---|---|---|
 | corpus (`corpus.csv`) | 01 e 05 | `estrutura/codigo/00-preparar-corpus.R`, `utils-corpus.R`, `00b-exportar-paragrafos-csv.R`; `banco-de-dados/corpus.csv` | ok |
-| `config.R` | 01 | `estrutura/codigo/config.R` | reconstruído na Aula 06; Aula 06 acrescentou `prf_k` e `rocchio` |
+| `config.R` | 01 | `estrutura/codigo/config.R` | reconstruído na Aula 06; Aula 06 acrescentou `prf_k` e `rocchio`; Aula 07 acrescentou `modelo`, `lsa_k` e `rrf_c` |
 | tokenização + TDM | 01 | `01-intro-r.R`, `02-toy-corpus-tfidf.R` | ok |
 | TF-IDF + cosseno | 02 | `03-corpus-cidades-tfidf-busca.R`, `03b-...-paragrafos.R`, `04-similaridade-cosseno-cidades.R`, `06-modelo-espaco-vetorial-toy.R` | ok |
 | limpeza + stopwords do grupo | 03 | `07-pre-processamento-indice-invertido.R` (também o stemming, só nesse estudo); `utils-corpus.R` (`sem_acentos()`, acrescentada na Aula 06) | ok, acentos corrigidos |
@@ -91,6 +91,7 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 | julgamento, gabarito, separação dev/teste | 05 | `estrutura/ferramenta/julgar.html`, `09-concordancia-kappa.R`, `10-consolidar-qrels.R`, `13-montar-pool.R`, `14-separar-teste-desenvolvimento.R` | ok |
 | métricas (P@k, MAP, MRR, nDCG) dos dois modelos | 5,5 | `12-metricas-avaliacao.R`, `12b-metricas-estudo.ipynb` | ok |
 | realimentação (Rocchio, pseudo-realimentação) | 06 | `estrutura/codigo/aula06.ipynb` | testado, desligado (`prf_k = 0`; pesos do Rocchio registrados no `config.R`) |
+| LSA e busca híbrida | 07 | `estrutura/codigo/aula07.ipynb` | testado, não usado (`modelo = "bm25"`; `lsa_k = 40` e `rrf_c = 60` registrados no `config.R`) |
 
 **Observação.** Os guias esperam um `aulaXX.ipynb` por Parte D. O grupo trabalhou com scripts numerados e documentou cada etapa em `consolidado-legado/`; o único notebook do repositório antes da Aula 06 era o `12b`. Isso ainda **não** é registro de Parte D feita nos moldes do guia para as Aulas 01 a 5,5; **CONFIRMAR** com o professor se isso basta.
 
@@ -106,6 +107,9 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 - **Aula 06:** não usar pseudo-realimentação (PRF), mantendo o ranking base, porque nenhum $k$ (documentos do topo assumidos como relevantes) superou a base no desenvolvimento (MAP 0,606 sem PRF; 0,566 com $k=2$; 0,553 com $k=3$; 0,528 com $k=5$) e a PRF piorou de 3 a 4 das 7 consultas conforme o $k$. Sem teste: q01, q04 e q08 seguem lacradas. Ressalva: só 7 consultas de desenvolvimento, e a PRF melhora no máximo duas delas (q09; e q02 com $k=3$). Decisão tomada pelo Victor na sessão e confirmada por Flávia e Felipe (informado pelo Victor em 2026-11-25) · `cfg$prf_k = 0`, `cfg$rocchio = c(a = 1, b = 0.75, g = 0.15)` (pesos mantidos como registro do que foi testado).
 - **Aula 06, resultado:** Rocchio na consulta q07: AP na coleção completa 0,267 → 1,000; na residual com só `Cubatao_p8` marcado como relevante (mais quatro de grau 0 como não relevantes) 1,0 → 0,5. A completa é otimista porque `Cubatao_p8` e `Cubatao_p9`, que sobem ao topo, estavam em $D_r$; na residual, `Cubatao_p9`, não marcado, perdeu o 1º lugar para `Cubatao_p7`, parágrafo sobre o povoado e não sobre o município · resultado, sem campo.
 - **Aula 06, análise do drift:** na consulta q06 ("jogador santos futebol historia"), a PRF com $k = 3$ incluiu `Cubatao_p17` (grau 0, sobre a história política e eleitoral de Cubatão) no centroide dos relevantes, ao lado de `Santos_p22` e `Santos_p23`, favorecido pelo fato de "historia" ser a única palavra da consulta original presente no texto de `Cubatao_p17`. Com isso, a consulta reformulada passou a ser dominada por termos políticos de Cubatão (6 dos 10 novos termos de maior peso, liderados por "marcia", com 4,143), enquanto os outros 4 vêm dos parágrafos de Santos ("esporte" e "surfe" de `Santos_p23`, "titulos" e "tres" de `Santos_p22`), com "esporte" (3,107) empatado com "rosa" e "vice". Esse desvio (drift) jogou `Cubatao_p17` para o 1º lugar, empurrou o relevante `Santos_p22` para o 2º e derrubou o AP da consulta de 1,0 para 0,5. A palavra "jogador" não está no vocabulário do corpus, então a consulta atuou só com "futebol", "historia" e "santos" · resultado, sem campo.
+- **Aula 07:** modelo do motor = BM25 (sem LSA nem híbrido), $k$ = 40 registrado e não usado, porque nenhuma linha com LSA superou o BM25 no desenvolvimento (MAP dev: BM25 0,635; LSA 0,204, 0,494, 0,527 e 0,570 com $k$ = 5, 10, 20 e 40; híbrido 0,524, 0,560, 0,579 e 0,603 com os mesmos $k$) e, com $k$ = 40, nenhum dos dois ganhou do BM25 em consulta alguma (o LSA perdeu em 4 de 7: q02, q05, q07 e q09; o híbrido, em 3: q02, q05 e q07). Teste rodado uma vez, nas três consultas lacradas: MAP 0,150 (q01 0,056; q04 0,333; q08 0,062), igual para o BM25 e para o escolhido, que é o mesmo modelo. Ressalva: só 7 consultas de desenvolvimento, grade de $k$ até 40 (o máximo é 63) e o MAP ainda subia com o $k$; a queda de 0,635 para 0,150 pode vir do tamanho da amostra de teste (3 consultas) ou de uma dificuldade maior, e os dados não separam os dois efeitos. O teste foi usado: nada mais se ajusta com base nele. Decisão tomada pelo grupo na sessão (Victor, Flávia e Felipe), com o teste rodado só depois de escrita a escolha · `cfg$modelo = "bm25"`, `cfg$lsa_k = 40`, `cfg$rrf_c = 60` (os dois últimos registram o que foi testado).
+- **Aula 07, resultado:** LSA no corpus de 63 parágrafos com $k = 20$ guarda 0,486 da energia. Na q10, os top-5 do BM25 e do LSA têm 1 documento em comum (`Guaruja_p19`); os 4 que só o LSA trouxe e os 4 que só o BM25 trouxe têm grau 0. `Cubatao_p9` e `Cubatao_p4` não têm palavra alguma da consulta e só vieram pelas direções da SVD (ruído); o BM25 trouxe `Guaruja_p10` por "guaruja" e por "Santos" de Alberto Santos Dumont · resultado, sem campo.
+- **Aula 07, análise (texto do grupo):** com $k = 40$, nenhum dos dois modelos superou o BM25 em consulta alguma no conjunto de desenvolvimento. Ainda assim, vale olhar tanto para uma perda clara na q02 quanto para um movimento discreto na q05 com híbrido em $k = 20$ (0,083 contra 0,077 do BM25), além do empate em 0,500 na q09. Na perda da q02 ("praias santos quantidade"), o BM25 coloca `Santos_p14` em 2º lugar (AP = 0,500), enquanto o híbrido com $k = 40$ o empurra para 3º (AP = 0,333). `Santos_p14` responde à pergunta ao trazer "6 praias" no contexto de Santos. Já `Guaruja_p2` sobe para 1º no LSA e para 2º no híbrido porque reúne vocabulário de praias e turismo de Guarujá, sem dar quantidade nem tratar de Santos. Na RRF com $c = 60$, `Guaruja_p2` ($\frac{1}{61} + \frac{1}{63} = 0{,}0323$) fica à frente de `Santos_p14` ($\frac{1}{62} + \frac{1}{63} = 0{,}0320$) por apenas $0{,}0003$, mostrando que a fusão por posto ignora tanto o que a consulta pede quanto a distância real entre os itens. Na q05 ("tamanho guaruja"), o relevante `Guaruja_p1` responde ao tamanho com "área de 144,794 km²" e "densidade", sem usar a palavra "tamanho", e traz "guaruja" apenas uma vez na abertura, em meio a vários números. Isso cria um descasamento de vocabulário que o LSA foi feito para enfrentar, mas o híbrido com $k = 20$ moveu o relevante apenas uma casa, do 13º para o 12º lugar (passando `Guaruja_p4`). Os dados não mostram por que o avanço foi tão curto; fica como hipótese que o corpus de 63 parágrafos seja pequeno demais para o LSA ligar com força "tamanho" a "área" · resultado, sem campo.
 
 > **Correção dos acentos e linha de base da Aula 06 (2026-11-24).** Os rankings da Aula 5,5 saíram de uma máquina em que `iconv(..., "ASCII//TRANSLIT")` troca cada letra acentuada por `?` (o resultado depende do idioma configurado no computador). "Guarujá" virava "guaruj" e "Cubatão" virava "cubat", que não casam com as consultas q05 ("guaruja") e q07 ("cubatao"): todos os escores dessas consultas eram zero, nos três modelos. Reproduzido: o script `11` em um ambiente com o `iconv` falhando devolve exatamente o `rankings.rds` antigo. Correção: `sem_acentos()` em `utils-corpus.R`, que dá o mesmo resultado em qualquer computador, usada em `03`, `03b`, `07` e `11`. Foram regenerados `rankings.rds`, `metricas_por_consulta.csv`, `metricas_medias.csv` e `metricas_teste_LACRADO_nao_abrir.csv` (este último foi recalculado pelo próprio script `12`, **sem ser aberto**). Por esse motivo, as métricas de teste que o grupo eventualmente tenha anotado antes de hoje não valem mais.
 >
@@ -128,12 +132,13 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 - **2026-11-24:** corrigida a retirada de acentos (`sem_acentos()`) e regenerados rankings e métricas (seção 6); esta reconstrução da ficha; gerados `config.R`, `corpus.csv`, `origem.rds`, `qrels_consenso.csv` e os `qrels_<juiz>_<data>.csv`; `necessidades.csv` ganhou a coluna `conjunto`.
 - **2026-11-25:** Aula 06, Parte D. Presente: Victor (sozinho). Digitou: Victor (Módulos 7, 8 e 9). Feito: Rocchio na q07, na coleção completa e na residual; pseudo-realimentação com $k$ = 2, 3 e 5 nas 7 consultas de desenvolvimento; drift na q06 (`Cubatao_p17`); decisão de não usar PRF, com o teste mantido lacrado. Produzido: `cfg$prf_k` e `cfg$rocchio` no `config.R`; funções `rocchio`, `ranking_vetor`, `residual`, `prf`, `ap_q` e `ranking_motor` (em `aula06.ipynb`); análise do drift. Pendente: enviar ao GitHub o `config.R` editado, o `aula06.ipynb` e os consolidados; teoria da Aula 06 de Flávia e Felipe em `consolidados/<nome>/`, se ainda não estiver lá; perguntar ao professor se scripts numerados bastam nas Partes D das Aulas 01 a 5,5.
 - **2026-11-25 (depois da Parte D):** Flávia e Felipe confirmaram a decisão de não usar PRF (informado pelo Victor). O grupo combinou fazer, a partir da Aula 07, a teoria e a Parte D juntos, em uma sessão só, com consolidado de equipe em `consolidados/equipe/`; cada integrante segue enviando ao menos um arquivo com a própria conta do GitHub. As Aulas 5 e 5,5 já tinham sido feitas assim. Pendente: perguntar ao professor se esse formato é aceito (decidido não perguntar por ora, pelo prazo).
+- **2026-11-25 (Aula 07, teoria e Parte D):** a teoria (LSA e RRF) foi feita em equipe, em revezamento (consolidado `aula07_consolidado.md`, acertos em todos os seis módulos do teste), e a Parte D no mesmo dia. Presentes na Parte D: Victor, Flávia e Felipe. Digitaram: Victor (Módulo 7), Flávia (Módulo 8), Felipe (Módulo 9). Feito: LSA com $k = 20$ no corpus de 63 parágrafos e leitura dos textos na q10; BM25, LSA ($k$ = 5, 10, 20 e 40) e híbrido (RRF, $c = 60$) nas 7 consultas de desenvolvimento; leitura da q02 (perda) e da q05 (ganho mínimo); decisão de ficar com o BM25; teste rodado uma vez (MAP 0,150); registro no `config.R`; o top-5 da q07 pelo `ranking_motor` conferiu com o AP do BM25 na tabela (0,367). Produzido: `cfg$modelo`, `cfg$lsa_k` e `cfg$rrf_c` no `config.R`; funções `lsa`, `ranking_lsa`, `rrf` (copiadas da teoria), `ranking_modelo`, `ap_modelo` e `ranking_motor` (em `aula07.ipynb`); análise de ganho e perda. Pendente: enviar ao GitHub o `config.R` editado, o `aula07.ipynb` e os consolidados (inclusive os da Aula 06 que ainda faltem, conforme a linha de 2026-11-25 acima); `prf_k` segue em 0, então não há pendência de PRF com LSA; o teste foi usado, e qualquer ajuste novo precisa de outra base que não ele; a pergunta sobre significância da diferença entre modelos fica para a Aula 16.
 
 ---
 
 <!-- estado-R:inicio -->
 ## Estado do R ao fim da sessão
-*gerado por `anexar_estado()` em 2026-11-25 18:33 · R version 4.6.1 (2026-06-24) · motor06 v2 2026-10-08 · não edite à mão*
+*gerado por `anexar_estado()` em 2026-11-26 00:54 · R version 4.6.1 (2026-06-24) · motor07 v1 2026-10-15 · não edite à mão*
 
 ### Objetos
 
@@ -141,7 +146,6 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 |---|---|---|---|
 | `a` | character | 1 | qrels_consenso.csv |
 | `arqs` | character | 1 | qrels_consenso.csv |
-| `base` | numeric, nomeado | 63 | Santos_p15 0.1398, Cubatao_p20 0.1001, Guaruja_p20 0.09553, Cubatao_p1 0.08983, Cubatao_p8 0.07804, Cubatao_p9 0.05835, ... |
 | `cfg$minimo` | numeric | 1 | 200 |
 | `cfg$limpar` | logical | 1 | TRUE |
 | `cfg$acentos` | character | 1 | translit |
@@ -152,18 +156,15 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 | `cfg$juizes` | character | 1 | consenso |
 | `cfg$prf_k` | numeric | 1 | 0 |
 | `cfg$rocchio` | numeric, nomeado | 3 | a 1, b 0.75, g 0.15 |
+| `cfg$modelo` | character | 1 | bm25 |
+| `cfg$lsa_k` | numeric | 1 | 40 |
+| `cfg$rrf_c` | numeric | 1 | 60 |
 | `cfg$grupo` | character | 1 | FFV |
 | `consultas` | character, nomeado | 10 | q01 fundacao santos ano, q02 praias santos quantidade, q03 maior porto america latina, q04 polo industrial, q05 tamanho guaruja, q06 jogador santos futebol hist..., ... |
 | `cp` | data.frame | 63 × 2 | colunas: id, texto |
 | `dev` | character | 7 | q02, q03, q05, q06, q07, q09, ... |
-| `Dnr` | character | 4 | Santos_p15, Cubatao_p20, Guaruja_p20, Cubatao_p1 |
 | `docs` | character, nomeado | 63 | Santos_p1 Santos é um município brasi..., Santos_p2 Fundada em 1546 por Brás Cu..., Santos_p3 Cidade mais populosa do lit..., Santos_p4 O principal cartão-postal d..., Santos_p5 Verificam-se relatos a resp..., Santos_p6 Em 1543, com o término da c..., ... |
-| `Dr` | character | 2 | Cubatao_p8, Cubatao_p9 |
-| `Dr_v` | character | 1 | Cubatao_p8 |
-| `entrou` | numeric, nomeado | 10 | marcia 4.143, esporte 3.107, rosa 3.107, vice 3.107, assumiu 2.072, donizete 2.072, ... |
-| `fora` | character | 6 | Cubatao_p8, Cubatao_p9, Santos_p15, Cubatao_p20, Guaruja_p20, Cubatao_p1 |
-| `fora_v` | character | 5 | Cubatao_p8, Santos_p15, Cubatao_p20, Guaruja_p20, Cubatao_p1 |
-| `g` | numeric, nomeado | 63 | Cubatao_p1 0, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
+| `escolha` | character | 1 | bm25 |
 | `ix$tokens` | list | 63 | elementos: Santos_p1, Santos_p2, Santos_p3, Santos_p4, Santos_p5, Santos_p6, Santos_p7, Santos_p8, ... |
 | `ix$vocab` | character | 1518 | 0, 000, 034, 041, 048, 1, ... |
 | `ix$tf` | matrix | 1518 × 63 | linhas: 0, 000, 034, ... \| colunas: Santos_p1, Santos_p2, Santos_p3, Santos_p4, ... |
@@ -176,28 +177,18 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 | `ix$dl` | numeric, nomeado | 63 | Santos_p1 57, Santos_p2 62, Santos_p3 40, Santos_p4 65, Santos_p5 33, Santos_p6 59, ... |
 | `ix$avgdl` | numeric | 1 | 43.21 |
 | `ix$idf_bm25` | numeric, nomeado | 1518 | 0 2.906, 000 2.906, 034 3.753, 041 3.753, 048 3.753, 1 2.019, ... |
-| `ix_aula$tokens` | list | 8 | elementos: d1, d2, d3, d4, d5, d6, d7, d8 |
-| `ix_aula$vocab` | character | 45 | a, acelera, aprendizado, avaliacao, bm25, busca, ... |
-| `ix_aula$tf` | matrix | 45 × 8 | linhas: a, acelera, aprendizado, ... \| colunas: d1, d2, d3, d4, ... |
-| `ix_aula$N` | integer | 1 | 8 |
-| `ix_aula$df` | numeric, nomeado | 45 | a 4, acelera 1, aprendizado 1, avaliacao 1, bm25 1, busca 2, ... |
-| `ix_aula$idf_tfidf` | numeric, nomeado | 45 | a 0.6931, acelera 2.079, aprendizado 2.079, avaliacao 2.079, bm25 2.079, busca 1.386, ... |
-| `ix_aula$w` | matrix | 45 × 8 | linhas: a, acelera, aprendizado, ... \| colunas: d1, d2, d3, d4, ... |
-| `ix_aula$wn` | matrix | 45 × 8 | linhas: a, acelera, aprendizado, ... \| colunas: d1, d2, d3, d4, ... |
-| `ix_aula$postings` | list | 45 | elementos: recuperacao, de, informacao, ordena, documentos, por, relevancia, o, ... |
-| `ix_aula$dl` | numeric, nomeado | 8 | d1 7, d2 9, d3 9, d4 6, d5 9, d6 8, ... |
-| `ix_aula$avgdl` | numeric | 1 | 8 |
-| `ix_aula$idf_bm25` | numeric, nomeado | 45 | a 0.6931, acelera 1.792, aprendizado 1.792, avaliacao 1.792, bm25 1.792, busca 1.281, ... |
-| `MOTOR_VERSAO` | character | 1 | motor06 v2 2026-10-08 |
+| `ks` | numeric | 4 | 5, 10, 20, 40 |
+| `m20$U` | matrix | 1518 × 20 | linhas: 0, 000, 034, ... \| colunas: (sem nomes) |
+| `m20$S` | numeric | 20 | 41.45, 36.82, 34.11, 33.36, 31.35, 30.9, ... |
+| `m20$D` | matrix | 63 × 20 | linhas: Santos_p1, Santos_p2, Santos_p3, ... \| colunas: (sem nomes) |
+| `MOTOR_VERSAO` | character | 1 | motor07 v1 2026-10-15 |
+| `ms$k5` | list | 3 | elementos: U, S, D |
+| `ms$k10` | list | 3 | elementos: U, S, D |
+| `ms$k20` | list | 3 | elementos: U, S, D |
+| `ms$k40` | list | 3 | elementos: U, S, D |
 | `nec` | data.frame | 10 × 5 | colunas: consulta, texto_consulta, necessidade, escopo, conjunto |
-| `novo` | numeric, nomeado | 63 | Cubatao_p8 0.6995, Cubatao_p9 0.6974, Cubatao_p7 0.07703, Cubatao_p11 0.07233, Cubatao_p18 0.06686, Cubatao_p6 0.05564, ... |
-| `novo_v` | numeric, nomeado | 63 | Cubatao_p8 0.979, Cubatao_p7 0.0689, Cubatao_p9 0.06136, Santos_p6 0.05334, Cubatao_p2 0.05197, Cubatao_p18 0.05143, ... |
 | `origem` | character, nomeado | 63 | Santos_p1 Santos, Santos_p2 Santos, Santos_p3 Santos, Santos_p4 Santos, Santos_p5 Santos, Santos_p6 Santos, ... |
-| `q` | character | 1 | q07 |
-| `q_aula` | numeric, nomeado | 45 | a 0, acelera 0, aprendizado 0, avaliacao 0, bm25 0, busca 0, ... |
-| `q0` | numeric, nomeado | 1518 | 0 0, 000 0, 034 0, 041 0, 048 0, 1 0, ... |
-| `q0_06` | numeric, nomeado | 1518 | 0 0, 000 0, 034 0, 041 0, 048 0, 1 0, ... |
-| `q3` | numeric, nomeado | 1518 | 0 0, 000 0, 034 0, 041 0, 048 0, 1 0, ... |
+| `q` | character | 1 | q05 |
 | `qrels$q01` | numeric, nomeado | 63 | Cubatao_p1 0, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
 | `qrels$q02` | numeric, nomeado | 63 | Cubatao_p1 0, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
 | `qrels$q03` | numeric, nomeado | 63 | Cubatao_p1 0, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
@@ -209,14 +200,24 @@ As consultas de teste (q01, q04, q08) ficam lacradas; os resultados delas estão
 | `qrels$q09` | numeric, nomeado | 63 | Cubatao_p1 2, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
 | `qrels$q10` | numeric, nomeado | 63 | Cubatao_p1 0, Cubatao_p10 0, Cubatao_p11 0, Cubatao_p12 0, Cubatao_p13 0, Cubatao_p14 0, ... |
 | `R_q` | integer, nomeado | 10 | q01 1, q02 1, q03 3, q04 1, q05 1, q06 1, ... |
+| `rb` | numeric, nomeado | 63 | Guaruja_p19 1.942, Guaruja_p12 1.854, Guaruja_p2 1.741, Guaruja_p9 1.737, Guaruja_p10 1.7, Guaruja_p3 1.601, ... |
+| `rel` | character | 1 | Guaruja_p1 |
 | `REPO` | character | 1 | https://raw.githubuserconte... |
+| `rh` | numeric, nomeado | 63 | Guaruja_p19 0.03227, Guaruja_p2 0.03227, Guaruja_p9 0.03175, Guaruja_p12 0.03151, Guaruja_p3 0.03078, Guaruja_p10 0.02967, ... |
+| `rl` | numeric, nomeado | 63 | Guaruja_p2 0.7699, Santos_p11 0.5374, Santos_p14 0.5073, Guaruja_p15 0.4087, Santos_p12 0.3727, Guaruja_p9 0.3326, ... |
+| `s$d` | numeric | 63 | 41.45, 36.82, 34.11, 33.36, 31.35, 30.9, ... |
+| `s$u` | matrix | 1518 × 63 | linhas: (sem nomes) \| colunas: (sem nomes) |
+| `s$v` | matrix | 63 × 63 | linhas: (sem nomes) \| colunas: (sem nomes) |
+| `so_bm25` | character | 4 | Guaruja_p10, Santos_p16, Guaruja_p4, Guaruja_p18 |
+| `so_lsa` | character | 4 | Cubatao_p8, Guaruja_p2, Cubatao_p9, Cubatao_p4 |
 | `stopwords_pt` | character | 203 | a, ao, aos, aquela, aquelas, aquele, ... |
-| `tab_dev` | matrix | 4 × 7 | linhas: base, k2, k3, ... \| colunas: q02, q03, q05, q06, ... |
-| `top3` | character | 3 | Santos_p22, Santos_p23, Cubatao_p17 |
+| `tab_dev` | matrix | 9 × 7 | linhas: bm25, lsa.k5, lsa.k10, ... \| colunas: q02, q03, q05, q06, ... |
+| `tab_teste` | matrix | 2 × 3 | linhas: bm25, escolhido \| colunas: q01, q04, q08 |
+| `teste` | character | 3 | q01, q04, q08 |
 | `usar` | character | 10 | q01, q02, q03, q04, q05, q06, ... |
 
 ### Funções definidas
 
-`anexar_estado`, `ap`, `ap_q`, `bm25`, `bm25_doc`, `busca_AND`, `busca_booleana`, `cfg_aula`, `cosseno`, `dcg`, `docs_aula`, `estado`, `gabarito_aula`, `idf_bm25`, `idf_classico`, `indice_invertido`, `kappa_cohen`, `kappa_matriz`, `ler_qrels`, `limpar`, `matriz_tf`, `metricas`, `montar`, `ndcg`, `norm_cols`, `precisao_k`, `preparar`, `prf`, `ranking_bm25`, `ranking_cosseno`, `ranking_motor`, `ranking_vetor`, `recall_k`, `relevancia`, `residual`, `rocchio`, `rr`, `saturacao`, `sem_stop`, `stopwords_aula`, `tokenizar`, `vetor_consulta`
+`anexar_estado`, `ap`, `ap_modelo`, `bm25`, `bm25_doc`, `busca_AND`, `busca_booleana`, `cfg_aula`, `cosseno`, `dcg`, `docs_aula`, `estado`, `gabarito_aula`, `idf_bm25`, `idf_classico`, `indice_invertido`, `kappa_cohen`, `kappa_matriz`, `ler_qrels`, `limpar`, `lsa`, `matriz_tf`, `metricas`, `montar`, `ndcg`, `norm_cols`, `precisao_k`, `preparar`, `prf`, `ranking_bm25`, `ranking_cosseno`, `ranking_lsa`, `ranking_modelo`, `ranking_motor`, `ranking_vetor`, `recall_k`, `relevancia`, `residual`, `rocchio`, `rr`, `rrf`, `saturacao`, `sem_stop`, `stopwords_aula`, `tokenizar`, `vetor_consulta`
 <!-- estado-R:fim -->
 
