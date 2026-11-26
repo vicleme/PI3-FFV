@@ -64,6 +64,10 @@ cfg <- list(
   lsa_k  = 40,                            # melhor k testado (5, 10, 20, 40); registrado, nao usado
   rrf_c  = 60,                            # constante da fusao RRF; registrada, nao usada
 
+  # --- Aula 08: reordenacao (rerank) ------------------------------------
+  rerank_k = 5,                           # quantos do topo o reordenador reordena (0 = nao)
+  janela   = 5,                           # distancia maxima da proximidade ordenada
+
   # --- fim ----------------------------------------------------------------
   grupo = "FFV"                 # ultimo campo, sem virgula depois
 )
